@@ -1,0 +1,39 @@
+services:
+  redis:
+    image: redislabs/redismod
+    ports:
+      - '6379:6379'
+  db:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  marketer:
+    build:
+      context: ./MarketDater
+      target: builder
+    container_name: fastapi-application
+    environment:
+      PORT: 8000
+    ports:
+      - '8000:8000'
+    restart: "no"
+    depends_on:
+      - redis
+  web:
+    build:
+      context: ./Portfolio
+    command: bash -c "python manage.py runserver 0.0.0.0:9000"
+    container_name: portfolio
+    ports:
+      - "9000:9000"
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    depends_on:
+      - db
+      - marketer

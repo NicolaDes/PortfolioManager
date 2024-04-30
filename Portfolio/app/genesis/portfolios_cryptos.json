@@ -1,0 +1,114 @@
+[
+    {
+        "model": "portfolios.assetInPortfolio",
+        "pk": 2,
+        "fields": {
+            "asset" : 8,
+            "portfolio": 1,
+            "invested": 229.64,
+            "quantity": 25
+        }
+    },
+    {
+        "model": "portfolios.assetInPortfolio",
+        "pk": 3,
+        "fields": {
+            "asset" : 1,
+            "portfolio": 1,
+            "invested": 996,
+            "quantity": 31.747
+        }
+    },
+    {
+        "model": "portfolios.assetInPortfolio",
+        "pk": 4,
+        "fields": {
+            "asset" : 9,
+            "portfolio": 1,
+            "invested": 558.91,
+            "quantity": 75
+        }
+    }
+
+    ,
+    {
+        "model": "portfolios.assetInPortfolio",
+        "pk": 5,
+        "fields": {
+            "asset" : 10,
+            "portfolio": 1,
+            "invested": 549.96,
+            "quantity": 100
+        }
+    },
+    {
+        "model": "portfolios.assetInPortfolio",
+        "pk": 6,
+        "fields": {
+            "asset" : 6,
+            "portfolio": 1,
+            "invested": 676,
+            "quantity": 500
+        }
+    },
+    {
+        "model": "portfolios.assetInPortfolio",
+        "pk": 7,
+        "fields": {
+            "asset" : 19,
+            "portfolio": 1,
+            "invested": 40,
+            "quantity": 141
+        }
+    },
+    {
+        "model": "portfolios.assetInPortfolio",
+        "pk": 8,
+        "fields": {
+            "asset" : 2,
+            "portfolio": 1,
+            "invested": 315,
+            "quantity": 498.05
+        }
+    },
+    {
+        "model": "portfolios.assetInPortfolio",
+        "pk": 9,
+        "fields": {
+            "asset" : 18,
+            "portfolio": 1,
+            "invested": 165.22,
+            "quantity": 50
+        }
+    },
+    {
+        "model": "portfolios.assetInPortfolio",
+        "pk": 10,
+        "fields": {
+            "asset" : 3,
+            "portfolio": 1,
+            "invested": 1051.68,
+            "quantity": 1750
+        }
+    },
+    {
+        "model": "portfolios.assetInPortfolio",
+        "pk": 11,
+        "fields": {
+            "asset" : 7,
+            "portfolio": 1,
+            "invested": 682.12,
+            "quantity": 175
+        }
+    },
+    {
+        "model": "portfolios.assetInPortfolio",
+        "pk": 13,
+        "fields": {
+            "asset" : 11,
+            "portfolio": 1,
+            "invested": 466.3,
+            "quantity": 500
+        }
+    }
+]

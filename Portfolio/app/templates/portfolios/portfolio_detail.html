@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+
+{% block page_content %}
+<h1>{{ portfolio.model.name }}</h1>
+<div id="portfolio-management">
+  <div id="left-section">
+    <section id="add-ticker">
+      <h2 class="red">Aggiungi Ticker</h2>
+      <table>
+        <form method="post" action="{% url 'add_ticker' pk=portfolio.model.pk %}">
+            {% csrf_token %}
+            <tr>
+                <td><label for="ticker">Ticker:</label></td>
+                <td><input type="text" id="ticker" name="ticker" required></td>
+            </tr>
+            <tr>
+                <td><label for="quantity">Quantità:</label></td>
+                <td><input type="number" id="quantity" name="quantity" required></td>
+            </tr>
+            <tr>
+                <td><label for="invested">Valore Investito (€):</label></td>
+                <td><input type="number" id="invested" name="invested" required></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="Load" name="load">
+                    <input type="submit" value="Add" name="Add">
+                </td>
+            </tr>
+        </form>
+    </table>    
+
+      <table style="width: 100%;">
+        <tr>
+            <th>Price</th>
+            <th>&alpha;</th>
+            <th>&beta;</th>
+            <th>P<sub>&alpha;</sub></th>
+            <th>P<sub>&beta;</sub></th>
+        </tr>
+        <tr>
+            <td id="price">NaN€</td>
+            <td id="alpha">NaN</td>
+            <td id="beta">NaN</td>
+            <td id="portfolioAlpha">NaN</td>
+            <td id="portfolioBeta">NaN</td>
+        </tr>
+      </table>
+    </section>
+
+    <section id="cashflow-analysis">
+      <h2 class="grey">Analisi Cashflow</h2>
+      <!-- Grafico delle proiezioni del cashflow -->
+      <div id="cashflow-chart">
+        <!-- Qui va inserito il grafico -->
+      </div>
+    </section>
+  </div>
+
+  <div id="right-section" style="display: flex; flex-direction: column; align-items: flex-start;">
+    <section id="asset-allocation" style="width: 100%;">
+        <h2 class="grey" style="text-align: left;">Asset Allocation</h2>
+        <div style="text-align: left;">
+            <ul>
+                <li><strong>Value:</strong> {{ portfolio.value|floatformat:2|intcomma }} €</li>
+                <li><strong>Invested:</strong> {{ portfolio.model.invested|floatformat:2|intcomma }} €</li>
+                <li><strong>P/L:</strong> {{ portfolio.drawdown }} %</li>
+                <li><strong>Available:</strong> {{ portfolio.model.liquidity|floatformat:2|intcomma }} €</li>
+                <li><strong>&alpha;:</strong> {{ portfolio.alpha }}</li>
+                <li><strong>&beta;:</strong> {{ portfolio.beta }}</li>
+            </ul>
+        </div>
+        <div class="row row-cols-2">
+            {% for aip in portfolio.assets %}
+              {% include "widgets/asset.html" with pk=aip.model.pk ticker=aip.model.asset.ticker invested=aip.model.invested percentage_change=aip.drawdown value=aip.value progress_percentage=aip.percentage %}
+            {% endfor %}
+        </div>
+    </section>
+  </div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Aggiungi event listener al bottone 'Load'
+        document.querySelector('input[name="load"]').addEventListener('click', function(event) {
+            event.preventDefault();
+            const ticker = document.querySelector('#ticker').value;
+            const quantity = document.querySelector('#quantity').value;
+
+            // Esegui una richiesta AJAX al server Django
+            fetch('/portfolios/{{ portfolio.model.pk }}/getTickerInfos/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'), // Ottieni il token CSRF
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ticker, quantity})
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Aggiorna la tabella con i nuovi valori
+                document.getElementById('price').textContent = data.price.toFixed(2) + ' €';
+                document.getElementById('alpha').textContent = data.alpha.toFixed(2);
+                document.getElementById('beta').textContent = data.beta.toFixed(2);
+                document.getElementById('portfolioAlpha').textContent = data.portfolioAlpha.toFixed(2);
+                document.getElementById('portfolioBeta').textContent = data.portfolioBeta.toFixed(2);
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+
+    // Funzione per ottenere il valore del cookie CSRF
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+            }
+        }
+        return cookieValue;
+    }
+
+    function deleteAsset(pk) {
+        console.log(`L'asset con ID ${pk} verrà eliminato.`);
+    }
+</script>
+
+{% endblock %}

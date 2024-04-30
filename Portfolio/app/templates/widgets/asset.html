@@ -1,0 +1,17 @@
+<!-- widget_template.html -->
+{% load humanize %}
+
+<div class="widget-container">
+    <button class="delete-button" onclick="deleteAsset({{ pk }})">❌</button>
+    <div class="info-container">
+        <div class="ticker">{{ ticker }}</div>
+        <div class="percentage">{{ progress_percentage|intcomma }}%</div>
+        <div class="invested">{{ invested|floatformat:2|intcomma }} €</div>
+        <div class="percentage-change">{{ percentage_change|intcomma }} %</div>
+        <div class="value">{{ value|floatformat:2|intcomma }} €</div>
+    </div>
+    <div class="progress-bar">
+        <div class="progress-fill" style="width: {{ progress_percentage }}%;">
+        </div>
+    </div>
+</div>

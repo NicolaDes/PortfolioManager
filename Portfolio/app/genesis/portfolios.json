@@ -1,0 +1,20 @@
+[
+    {
+        "model": "portfolios.portfolio",
+        "pk": 1,
+        "fields": {
+            "name": "High Risk 2/4 years",
+            "invested": 5482,
+            "liquidity": 800
+        }
+    },
+    {
+        "model": "portfolios.portfolio",
+        "pk": 2,
+        "fields": {
+            "name": "Mid term",
+            "invested": 0.00,
+            "liquidity": 0
+        }
+    }
+]
