@@ -1,2 +1,4 @@
-data/
+__data/
 __pycache__/
+tmp/
+venv/

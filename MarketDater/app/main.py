@@ -1,31 +1,31 @@
 from fastapi import FastAPI
 from redis import Redis
-from .data_retriever import DataRetriever
-from .market_data import MarketData
+from app.marketer.data_retriever import DataRetriever
+from app.marketer.market_data import MarketData
 
 app = FastAPI()
 redis = Redis(host='redis', port=6379)
-dr = DataRetriever(redis=redis, tout=60.0)
-market = MarketData(redis=redis)
+dr = DataRetriever(redis=redis)
+market = MarketData(redis=redis, dr=dr)
 
-@app.get("/{type}/{symbol}")
-def token_info(type: str, symbol: str):
+@app.get("/price/{ticker}")
+def token_info(ticker: str):
     global market
-    
-    if market.isNew(symbol):
-        market.addSymbol(type, symbol)
 
-    price = market.price(symbol)
+    price = market.price(ticker)
 
     return {"price": price}
 
-@app.get("/ohcl/{type}/{symbol}")
-def token_ohcl(type: str, symbol: str):
+@app.get("/ohlc/{ticker}")
+def token_ohlc(ticker: str):
     global market
-    
-    if market.isNew(symbol):
-        market.addSymbol(type, symbol)
 
-    price = market.ohlc(symbol)
+    ohlc = market.ohlc(ticker)
 
-    return {"ohcl": price}
+    return {"ohcl": ohlc}
+
+@app.post("/refresh")
+async def refresh():
+    global dr
+
+    dr.downloadAll()

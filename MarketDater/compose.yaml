@@ -1,0 +1,18 @@
+services:
+  redis:
+    image: redislabs/redismod
+    ports:
+      - '6379:6379'
+  marketer:
+    build:
+      context: .
+      target: builder
+    container_name: fastapi-application
+    environment:
+      PORT: 8000
+      PYTHONPATH: /app
+    ports:
+      - '8000:8000'
+    restart: "no"
+    depends_on:
+      - redis
