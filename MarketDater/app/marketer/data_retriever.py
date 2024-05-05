@@ -1,4 +1,4 @@
-from app.facades.ticker_downloader_facade import TickerDownloaderFacade
+from app.facades.downloader.ticker_downloader_facade import TickerDownloaderFacade
 
 class DataRetriever:
     def __init__(self, redis):

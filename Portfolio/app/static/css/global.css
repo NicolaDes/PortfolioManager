@@ -63,3 +63,16 @@ input[type="submit"] {
 td {
     text-align: center;
 }
+
+ul.messages {
+    list-style: none;
+    padding: 0;
+}
+
+ul.messages li {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #f2dede;
+    color: #a94442;
+}

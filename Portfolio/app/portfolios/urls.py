@@ -5,5 +5,7 @@ urlpatterns = [
     path("", views.portfolio_index, name="portfolio_index"),
     path("<int:pk>/", views.portfolio_detail, name="portfolio_detail"),
     path("<int:pk>/getTickerInfos/", views.get_ticker_infos, name='get_ticker_infos'),
-    path("add_ticker/<int:pk>/", views.add_ticker, name='add_ticker')
+    path("new_ticker/<int:pk>/", views.new_ticker, name='new_ticker'),
+    path("remove_ticker/<int:pk>/", views.remove_ticker, name='remove_ticker'),
+    path("increase_ticker/<int:pk>/", views.increase_ticker, name='increase_ticker')
 ]

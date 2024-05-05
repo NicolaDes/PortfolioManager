@@ -1,68 +1,63 @@
 /* styles.css */
-
-/* Stile per il widget-container */
 .widget-container {
     width: 350px;
-    background-color: #000; /* Sfondo nero solo per il widget-container */
+    background-color: #000;
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    color: #fff; /* Testo in bianco */
+    color: #fff;
     margin-left: 20px;
     margin-bottom: 10px;
-    position: relative; /* Per posizionare il pulsante di eliminazione */
+    position: relative;
 }
 
-/* Stile per il pulsante di eliminazione */
+.add-button {
+    background-color: rgba(0, 255, 0, 0.8);
+    color: #ccc;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    width:47%;
+    height: 40px;
+}
+
 .delete-button {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: none;
-    border: none;
-    font-size: 1.5em;
-    color: red;
-}
-
-/* Altri stili per gli elementi del widget */
-.info-container {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-}
-
-.ticker, .value {
-    color: #fff; /* Testo in bianco */
-}
-
-.invested {
-    color: #ccac00; /* Testo ciallo ocra */
-}
-
-.percentage-change {
-    /* Il colore sarà impostato dinamicamente con JavaScript */
-}
-
-.progress-bar {
-    width: 100%;
-    height: 10px;
-    background-color: #808080; /* Grigio opaco per la parte non riempita */
+    background-color: rgba(255, 0, 0, 0.8);
+    color: #ccc;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    margin-top: 10px;
-    position: relative; /* Per posizionare la percentuale al fianco */
+    cursor: pointer;
+    width:47%;
+    height: 40px;
 }
 
-.progress-fill {
-    height: 100%;
-    background-color: #ff0000; /* Rosso per la parte riempita */
-    border-radius: 5px;
-}
-
-.progress-percentage {
+.overlay-buttons {
+    display: none;
     position: absolute;
-    right: 0;
-    top: 0; /* Al fianco destro della barra */
-    color: #fff; /* Testo in bianco */
-    padding-left: 5px; /* Spazio tra la barra e il testo */
+    top: 80px;
+    width: 350px;
+}
+
+.table-container:hover + .overlay-buttons {
+    display: block;
+}
+
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.info-table th, .info-table td {
+    text-align: left;
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+.info-table th {
+    width: 50%;
+}
+
+.info-table td {
+    width: 50%;
 }

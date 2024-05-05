@@ -8,13 +8,15 @@ redis = Redis(host='redis', port=6379)
 dr = DataRetriever(redis=redis)
 market = MarketData(redis=redis, dr=dr)
 
-@app.get("/price/{ticker}")
+@app.get("/{ticker}")
 def token_info(ticker: str):
     global market
 
     price = market.price(ticker)
+    alpha = market.alpha(ticker)
+    beta = market.beta(ticker)
 
-    return {"price": price}
+    return {"eur": price, "alpha": alpha, "beta": beta}
 
 @app.get("/ohlc/{ticker}")
 def token_ohlc(ticker: str):
@@ -22,7 +24,7 @@ def token_ohlc(ticker: str):
 
     ohlc = market.ohlc(ticker)
 
-    return {"ohcl": ohlc}
+    return {"ohlc": ohlc}
 
 @app.post("/refresh")
 async def refresh():

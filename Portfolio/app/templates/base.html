@@ -9,11 +9,22 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
     <link rel="stylesheet" href="{% static 'css/asset.css' %}">
+    <link rel="stylesheet" href="{% static 'css/asset_allocation.css' %}">
 </head>
 
 
 
 <body class="container">
-{% block page_content %}{% endblock page_content %}
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+
+    {% block page_content %}{% endblock page_content %}
 </body>
 </html>

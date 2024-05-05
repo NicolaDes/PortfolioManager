@@ -17,3 +17,9 @@ class MarketData:
         data = self.dr.ohlc(ticker=ticker, interval=interval, since=since)
 
         return json.dumps(data)
+    
+    def alpha(self, ticker) -> float:
+        return 0.0
+    
+    def beta(self, ticker) -> float:
+        return 0.0

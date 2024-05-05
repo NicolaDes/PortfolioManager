@@ -131,5 +131,40 @@
         "fields": {
             "ticker": "POLIS"
         }
+    },
+    {
+        "model": "portfolios.asset",
+        "pk": 20,
+        "fields": {
+            "ticker": "oogy"
+        }
+    },
+    {
+        "model": "portfolios.asset",
+        "pk": 21,
+        "fields": {
+            "ticker": "theheist"
+        }
+    },
+    {
+        "model": "portfolios.asset",
+        "pk": 22,
+        "fields": {
+            "ticker": "the_heist_land"
+        }
+    },
+    {
+        "model": "portfolios.asset",
+        "pk": 23,
+        "fields": {
+            "ticker": "PF4"
+        }
+    },
+    {
+        "model": "portfolios.asset",
+        "pk": 24,
+        "fields": {
+            "ticker": "torrino_dao_collection"
+        }
     }
 ]

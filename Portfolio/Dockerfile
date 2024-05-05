@@ -9,4 +9,4 @@ COPY /app/ .
 
 RUN python manage.py makemigrations portfolios
 RUN python manage.py migrate portfolios
-RUN python manage.py loaddata genesis/*.json
+# RUN python manage.py loaddata genesis/*.json
