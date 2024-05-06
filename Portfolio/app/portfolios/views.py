@@ -4,6 +4,8 @@ from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
+from django.contrib import messages
+
 
 from .forms import PortfolioForm, AssetInPortfolioForm
 from .model_decorators import AssetView, PortfolioView
@@ -73,10 +75,10 @@ def get_ticker_infos(request, pk):
 
 @csrf_exempt
 @require_http_methods(["POST"])
-def add_ticker(request, pk):
-    ticker = request.POST.get('ticker')
-    quantity = Decimal(request.POST.get('quantity'))
-    invested = Decimal(request.POST.get('invested'))
+def new_ticker(request, pk):
+    ticker = request.POST.get('newTicker')
+    quantity = Decimal(request.POST.get('newQuantity'))
+    invested = Decimal(request.POST.get('newInvestedValue'))
 
     asset, __created = Asset.objects.get_or_create(ticker=ticker)
     portfolio = Portfolio.objects.get(pk=pk)
@@ -91,36 +93,54 @@ def add_ticker(request, pk):
         
     portfolio.save()
 
-    context = {
-        "portfolio": PortfolioView(portfolio)
-    }
-
     return redirect("portfolio_detail", pk=pk)
 
 
 @csrf_exempt
 @require_http_methods(["POST"])
 def remove_ticker(request, pk):
-    data = json.loads(request.body)
-    ticker = data['ticker']
-    quantity = float(data['quantity'])
-    invested = float(data['invested'])
+    assetPk = request.POST.get('deleteAssetId')
+    quantity = Decimal(request.POST.get('deleteQuantity'))
+    profit = Decimal(request.POST.get('deleteProfit'))
 
-    asset, __created = Asset.objects.get_or_create(ticker=ticker)
     portfolio = Portfolio.objects.get(pk=pk)
-    assetInPortfolio, created = AssetInPortfolio.objects.get_or_create(asset=asset, portfolio=portfolio)
+    assetInPortfolio= AssetInPortfolio.objects.get(pk=assetPk)
 
-    if created:
-        portfolio.assets.add(assetInPortfolio)
+    if assetInPortfolio.quantity - quantity == 0:
+        assetInPortfolio.delete()
+    elif assetInPortfolio.quantity - quantity < 0:
+        messages.error(request, f"Error!! Removing {quantity} from {assetInPortfolio} is a negative result!")
+        return redirect("portfolio_detail", pk=pk)
     else:
-        assetInPortfolio.invested += invested
-        assetInPortfolio.quantity += quantity
+        assetInPortfolio.invested -= profit
+        assetInPortfolio.quantity -= quantity
         assetInPortfolio.save()
+        
+    portfolio.liquidity += profit
+    portfolio.save()
+
+    return redirect("portfolio_detail", pk=pk)
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def increase_ticker(request, pk):
+    assetPk = request.POST.get('addAssetId')
+    quantity = Decimal(request.POST.get('addQuantity'))
+    invested = Decimal(request.POST.get('addInvestedValue'))
+
+    portfolio = Portfolio.objects.get(pk=pk)
+    assetInPortfolio = AssetInPortfolio.objects.get(pk=assetPk)
+
+    if assetInPortfolio.portfolio != portfolio:
+        messages.error(request, f"Error!! asset {assetInPortfolio} is not in portfolio {portfolio}")
+        return redirect("portfolio_detail", pk=pk)
+
+    assetInPortfolio.invested += invested
+    assetInPortfolio.quantity += quantity
+    assetInPortfolio.save()
+
+    portfolio.liquidity -= invested
         
     portfolio.save()
 
-    context = {
-        "portfolio": portfolio
-    }
-
-    return render(request, "portfolios/portfolio_detail.html", context)
+    return redirect("portfolio_detail", pk=pk)

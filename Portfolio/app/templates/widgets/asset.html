@@ -1,17 +1,35 @@
-<!-- widget_template.html -->
 {% load humanize %}
-
 <div class="widget-container">
-    <button class="delete-button" onclick="deleteAsset({{ pk }})">❌</button>
-    <div class="info-container">
-        <div class="ticker">{{ ticker }}</div>
-        <div class="percentage">{{ progress_percentage|intcomma }}%</div>
-        <div class="invested">{{ invested|floatformat:2|intcomma }} €</div>
-        <div class="percentage-change">{{ percentage_change|intcomma }} %</div>
-        <div class="value">{{ value|floatformat:2|intcomma }} €</div>
+    <div class="table-container">
+        <table class="info-table">
+            <tr>
+                <th>Ticker</th>
+                <td>{{ ticker }}</td>
+            </tr>
+            <tr>
+                <th>Quantity</th>
+                <td>{{ quantity }}</td>
+            </tr>
+            <tr>
+                <th>Value</th>
+                <td>{{ value|floatformat:2|intcomma }} €</td>
+            </tr>
+            <tr>
+                <th>Percentage</th>
+                <td>{{ progress_percentage|intcomma }}%</td>
+            </tr>
+            <tr>
+                <th>Invested</th>
+                <td>{{ invested|floatformat:2|intcomma }} €</td>
+            </tr>
+            <tr>
+                <th>Percentage Change</th>
+                <td>{{ percentage_change|intcomma }} %</td>
+            </tr>
+        </table>
     </div>
-    <div class="progress-bar">
-        <div class="progress-fill" style="width: {{ progress_percentage }}%;">
-        </div>
+    <div class="overlay-buttons">
+        <button class="add-button" onclick="addAsset({{ pk }})">Add</button>
+        <button class="delete-button" onclick="deleteAsset({{ pk }})">Remove</button>
     </div>
 </div>

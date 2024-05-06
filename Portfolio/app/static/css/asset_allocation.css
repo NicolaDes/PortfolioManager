@@ -1,0 +1,45 @@
+/* Stile per il Popup Modale */
+.modal {
+    display: none; /* Nascondi il modale di default */
+    position: fixed; /* Rimani in posizione fissa */
+    z-index: 1; /* Siediti sopra tutto */
+    left: 0;
+    top: 0;
+    width: 100%; /* Larghezza piena */
+    height: 100%; /* Altezza piena */
+    overflow: auto; /* Abilita lo scroll se necessario */
+    background-color: rgba(0,0,0,0.8); /* Colore di sfondo scuro con opacità */
+}
+
+.modal-content {
+    background-color: #333; /* Sfondo scuro per il contenuto */
+    margin: 15% auto; /* 15% dal top e centrato orizzontalmente */
+    padding: 20px;
+    border: 1px solid #444; /* Bordo scuro */
+    width: 80%; /* Puoi regolare questa larghezza come preferisci */
+    color: #ddd; /* Testo chiaro per contrasto */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #fff; /* Testo più chiaro al passaggio del mouse o focus */
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Aggiungi stili per i bottoni se necessario */
+.asset-add-button, .asset-delete-button {
+    /* Stili per i bottoni nel tema scuro */
+    border: 1px solid #555; /* Bordo scuro */
+    color: #ddd; /* Testo chiaro */
+    /* Altri stili come padding, margin, ecc. */
+}
+
+/* Continua con gli altri stili che hai definito, aggiustando colori e sfondi per adattarli al tema scuro */

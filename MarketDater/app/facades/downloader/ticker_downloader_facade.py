@@ -1,7 +1,7 @@
-from app.facades.kraken_downloader import KrakenDownloader
-from app.facades.magiceden_downloader import MagicedenDownloader
-from app.facades.staratlas_nft_downloader import StaratlasNft
-from app.facades.jupiter_downloader import JupiterDownloader
+from app.facades.downloader.kraken_downloader import KrakenDownloader
+from app.facades.downloader.magiceden_downloader import MagicedenDownloader
+from app.facades.downloader.staratlas_nft_downloader import StaratlasNft
+from app.facades.downloader.jupiter_downloader import JupiterDownloader
 
 import json
 

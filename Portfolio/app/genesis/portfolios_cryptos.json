@@ -110,5 +110,55 @@
             "invested": 466.3,
             "quantity": 500
         }
+    },
+    {
+        "model": "portfolios.assetInPortfolio",
+        "pk": 14,
+        "fields": {
+            "asset" : 20,
+            "portfolio": 1,
+            "invested": 0,
+            "quantity": 3
+        }
+    },
+    {
+        "model": "portfolios.assetInPortfolio",
+        "pk": 15,
+        "fields": {
+            "asset" : 21,
+            "portfolio": 1,
+            "invested": 0,
+            "quantity": 3
+        }
+    },
+    {
+        "model": "portfolios.assetInPortfolio",
+        "pk": 16,
+        "fields": {
+            "asset" : 22,
+            "portfolio": 1,
+            "invested": 0,
+            "quantity": 3
+        }
+    },
+    {
+        "model": "portfolios.assetInPortfolio",
+        "pk": 17,
+        "fields": {
+            "asset" : 23,
+            "portfolio": 1,
+            "invested": 0,
+            "quantity": 1
+        }
+    },
+    {
+        "model": "portfolios.assetInPortfolio",
+        "pk": 18,
+        "fields": {
+            "asset" : 24,
+            "portfolio": 1,
+            "invested": 0,
+            "quantity": 3
+        }
     }
 ]

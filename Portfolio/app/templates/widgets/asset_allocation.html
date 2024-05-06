@@ -1,0 +1,124 @@
+{% load humanize %}
+<h2 class="grey" style="text-align: left;">Asset Allocation <button onclick="newAsset()">+</button></h2>
+<div>
+    <ul>
+        <li><strong>Value:</strong> {{ portfolio.value|floatformat:2|intcomma }} €</li>
+        <li><strong>Invested:</strong> {{ portfolio.model.invested|floatformat:2|intcomma }} €</li>
+        <li><strong>P/L:</strong> {{ portfolio.drawdown }} %</li>
+        <li><strong>Available:</strong> {{ portfolio.model.liquidity|floatformat:2|intcomma }} €</li>
+        <li><strong>&alpha;:</strong> {{ portfolio.alpha }}</li>
+        <li><strong>&beta;:</strong> {{ portfolio.beta }}</li>
+    </ul>
+</div>
+<div class="row row-cols-2">
+    {% for aip in portfolio.assets %}
+      {% include "widgets/asset.html" with pk=aip.model.pk ticker=aip.model.asset.ticker quantity=aip.model.quantity invested=aip.model.invested percentage_change=aip.drawdown value=aip.value progress_percentage=aip.percentage %}
+    {% endfor %}
+</div>
+
+<!-- Popup Modale per Aggiungere Asset -->
+<div id="addAssetModal" class="modal">
+    <div class="modal-content">
+        <span class="close">×</span>
+        <h1>Increase Asset Quantity Request</h1>
+        <form method="post" action="{% url 'increase_ticker' pk=portfolio.model.pk %}" id="addAssetForm">
+            {% csrf_token %}
+            <label for="quantity">Quantità:</label>
+            <input type="number" id="addQuantity" name="addQuantity" required>
+            
+            <label for="investedValue">Valore Investito:</label>
+            <input type="number" id="addInvestedValue" name="addInvestedValue" required>
+            
+            <input type="hidden" id="addAssetId" name="addAssetId">
+            
+            <input type="submit" value="Invia">
+        </form>
+    </div>
+</div>
+
+<!-- Popup Modale per Aggiungere Asset -->
+<div id="newAssetModal" class="modal">
+    <div class="modal-content">
+        <span class="close">×</span>
+        <h1>New Asset Request</h1>
+        <form method="post" action="{% url 'new_ticker' pk=portfolio.model.pk %}" id="newAssetForm">
+            {% csrf_token %}
+            <label for="ticker">Ticker Symbol:</label>
+            <input type="string" id="newTicker" name="newTicker" required>
+
+            <label for="quantity">Quantità:</label>
+            <input type="number" id="newQuantity" name="newQuantity" required>
+            
+            <label for="investedValue">Valore Investito:</label>
+            <input type="number" id="newInvestedValue" name="newInvestedValue" required>
+            
+            <input type="submit" value="Invia">
+        </form>
+    </div>
+</div>
+
+<!-- Popup Modale per Eliminare Asset -->
+<div id="deleteAssetModal" class="modal">
+    <div class="modal-content">
+        <span class="close">×</span>
+        <h1>Delete Asset Quantity Request</h1>
+        <form method="post" action="{% url 'remove_ticker' pk=portfolio.model.pk %}" id="deleteAssetForm">
+            {% csrf_token %}
+            <label for="deleteQuantity">Quantità da eliminare:</label>
+            <input type="number" id="deleteQuantity" name="deleteQuantity" required>
+            
+            <label for="deleteProfit">Profitto/Perdita:</label>
+            <input type="number" id="deleteProfit" name="deleteProfit" required>
+            
+            <input type="hidden" id="deleteAssetId" name="deleteAssetId">
+            
+            <input type="submit" value="Conferma Eliminazione">
+        </form>
+    </div>
+</div>
+
+
+<script>
+    // Funzione di utilità per mostrare o nascondere i modali
+    function toggleModal(modalId, show) {
+        var modal = document.getElementById(modalId);
+        modal.style.display = show ? 'block' : 'none';
+    }
+
+    // Event listener per chiudere i modali quando si clicca fuori o si preme 'Esc'
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            toggleModal(event.target.id, false);
+        }
+    };
+    document.addEventListener('keydown', function(event) {
+        if (event.key === "Escape") {
+            var modals = document.getElementsByClassName('modal');
+            Array.from(modals).forEach(function(modal) {
+                toggleModal(modal.id, false);
+            });
+        }
+    });
+
+    // Funzioni per aprire i modali specifici
+    function addAsset(pk) {
+        document.getElementById("addAssetId").value = pk;
+        toggleModal('addAssetModal', true);
+    }
+    function deleteAsset(pk) {
+        document.getElementById("deleteAssetId").value = pk;
+        toggleModal('deleteAssetModal', true);
+    }
+    function newAsset() {
+        toggleModal('newAssetModal', true);
+    }
+    
+    // Event listener per chiudere i modali quando si clicca sul pulsante di chiusura
+    var closeButtons = document.getElementsByClassName('close');
+    Array.from(closeButtons).forEach(function(button) {
+        button.onclick = function() {
+            var modal = button.closest('.modal');
+            toggleModal(modal.id, false);
+        };
+    });
+</script>

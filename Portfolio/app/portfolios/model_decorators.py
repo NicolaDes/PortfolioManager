@@ -8,60 +8,46 @@ class AssetView:
     def __init__(self, asset:Asset):
         self.model = asset
 
+        packet = requests.get('http://marketer:8000/'+self.model.ticker).json()
+
+        self._alpha = float(packet['alpha'])
+        self._beta = float(packet['beta'])
+        self._price = float(packet['eur'])
+
+    def download(self):
+        packet = requests.get('http://marketer:8000/'+self.model.ticker).json()
+        self._alpha = float(packet['alpha'])
+        self._beta = float(packet['beta'])
+        self._price = float(packet['eur'])
+
     @property
     def alpha(self):
-        btcStr = requests.get('http://marketer:8000/ohcl/cryptos/WBTCEUR').json()
-        btcJson = json.loads(btcStr['ohcl'])
-        btc_returns = pd.Series([float(btcJson[k]['close']) for k in btcJson]).pct_change() * 100
+        return self._alpha
 
-        # Download ohcl
-        string = requests.get('http://marketer:8000/ohcl/cryptos/'+self.model.ticker+"EUR").json()
-        j = json.loads(string['ohcl'])
-        
-        # Compute returns
-        returns = pd.Series([float(j[k]['close']) for k in j]).pct_change() * 100
-
-        # compute alpha
-        return (returns.iloc[-1] - (self.beta * (btc_returns.mean())))
-
-    
     @property
     def beta(self):
-        # Market index
-        btcStr = requests.get('http://marketer:8000/ohcl/cryptos/WBTCEUR').json()
-        btcJson = json.loads(btcStr['ohcl'])
-        btc_returns = pd.Series([float(btcJson[k]['close']) for k in btcJson]).pct_change() * 100
-        
-        # Download ohcl
-        string = requests.get('http://marketer:8000/ohcl/cryptos/'+self.model.ticker+"EUR").json()
-        j = json.loads(string['ohcl'])
-        
-        # Compute returns
-        returns = pd.Series([float(j[k]['close']) for k in j]).pct_change() * 100
-
-        return (returns.cov(btc_returns) / btc_returns.var())
+       return self._beta
 
     @property
     def price(self):
-        return float(requests.get('http://marketer:8000/cryptos/'+self.model.ticker+"EUR").json()['price'])
+        return self._price
 
 class AssetInPortfolioView:
     def __init__(self, assetInPortfolio:AssetInPortfolio):
         self.model = assetInPortfolio
         self.currAv = AssetView(self.model.asset)
-        totalValue = float(self.model.portfolio.liquidity)
-        for a in self.model.portfolio.assets.all():
-            av = AssetView(a)
-            totalValue += float(self.model.quantity) * av.price
-        self.percentageOfPortfolio = (float(self.model.quantity) * self.currAv.price) / totalValue
 
     @property
     def alpha(self):
-        return self.currAv.alpha * self.percentageOfPortfolio
+        if self.currAv.alpha is None:
+            return None
+        return self.currAv.alpha * self.percentage
     
     @property
     def beta(self):
-        return self.currAv.beta * self.percentageOfPortfolio
+        if self.currAv.beta is None:
+            return None
+        return self.currAv.beta * self.percentage
 
     @property
     def value(self):
@@ -69,11 +55,18 @@ class AssetInPortfolioView:
     
     @property
     def percentage(self):
-        return round((self.percentageOfPortfolio*100), 2)
+        totalValue = float(self.model.portfolio.liquidity)
+        for a in self.model.portfolio.assets.all():
+            av = AssetView(a)
+            totalValue += float(self.model.quantity) * av.price
+        percentageOfPortfolio = (float(self.model.quantity) * self.currAv.price) / totalValue
+        return round((percentageOfPortfolio*100), 2)
     
     @property
     def drawdown(self):
-        return round(((self.value / float(self.model.invested)) * 100), 2)
+        if self.model.invested <= 0:
+            return 0
+        return round((((self.value / float(self.model.invested)) - 1.0) * 100), 2)
 
 class PortfolioView:
     def __init__(self, portfolio:Portfolio):
@@ -81,19 +74,22 @@ class PortfolioView:
         self.assets = []
         for aip in self.model.assetinportfolio_set.all():
             self.assets.append(AssetInPortfolioView(aip))
+        self.assets.sort(key=lambda x: x.drawdown, reverse=True)
 
     @property
     def alpha(self):
         weightedAlpha = 0
         for a in self.assets:
-            weightedAlpha += a.alpha
+            if a.alpha is not None:
+                weightedAlpha += a.alpha
         return weightedAlpha
     
     @property
     def beta(self):
         weightedBeta = 0
         for a in self.assets:
-            weightedBeta += a.beta
+            if a.beta is not None:
+                weightedBeta += a.beta
         return weightedBeta
 
     @property
@@ -105,4 +101,4 @@ class PortfolioView:
     
     @property
     def drawdown(self):
-        return round((self.value / float(self.model.invested)) * 100, 2)
+        return round(((self.value / float(self.model.invested)) - 1.0) * 100, 2)
