@@ -8,5 +8,3 @@ docker exec -it portfolio python manage.py loaddata /app/genesis/backup/assets.j
 docker exec -it portfolio python manage.py loaddata /app/genesis/backup/aips.json
 
 docker exec -it portfolio /bin/bash -c "rm -rf /app/genesis/backup"
-
-pause

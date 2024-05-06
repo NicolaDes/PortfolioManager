@@ -1,0 +1,11 @@
+{% load humanize %}
+
+<div class="card-body">
+    <h5 class="card-title">{{ portfolio.model.name }}</h5>
+    <p class="card-text">{{ portfolio.value|floatformat:2|intcomma }} €</p>
+    <p class="card-text">{{ portfolio.drawdown|floatformat:2|intcomma }} %</p>
+    <a href="{% url 'portfolio_detail' portfolio.model.pk %}"
+       class="btn btn-primary">
+        Read More
+    </a>
+</div>

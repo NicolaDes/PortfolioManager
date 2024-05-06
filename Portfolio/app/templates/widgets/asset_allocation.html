@@ -12,7 +12,7 @@
 </div>
 <div class="row row-cols-2">
     {% for aip in portfolio.assets %}
-      {% include "widgets/asset.html" with pk=aip.model.pk ticker=aip.model.asset.ticker quantity=aip.model.quantity invested=aip.model.invested percentage_change=aip.drawdown value=aip.value progress_percentage=aip.percentage %}
+      {% include "widgets/asset.html" with pk=aip.model.pk ticker=aip.model.asset.ticker quantity=aip.model.quantity invested=aip.model.invested percentage_change=aip.drawdown value=aip.value progress_percentage=aip.percentage alpha=aip.alpha beta=aip.beta %}
     {% endfor %}
 </div>
 
@@ -24,10 +24,10 @@
         <form method="post" action="{% url 'increase_ticker' pk=portfolio.model.pk %}" id="addAssetForm">
             {% csrf_token %}
             <label for="quantity">Quantità:</label>
-            <input type="number" id="addQuantity" name="addQuantity" required>
+            <input type="number" step=".01" id="addQuantity" name="addQuantity" required>
             
             <label for="investedValue">Valore Investito:</label>
-            <input type="number" id="addInvestedValue" name="addInvestedValue" required>
+            <input type="number" id="addInvestedValue" step=".01" name="addInvestedValue" required>
             
             <input type="hidden" id="addAssetId" name="addAssetId">
             
@@ -47,10 +47,10 @@
             <input type="string" id="newTicker" name="newTicker" required>
 
             <label for="quantity">Quantità:</label>
-            <input type="number" id="newQuantity" name="newQuantity" required>
+            <input type="number" id="newQuantity" step=".01" name="newQuantity" required>
             
             <label for="investedValue">Valore Investito:</label>
-            <input type="number" id="newInvestedValue" name="newInvestedValue" required>
+            <input type="number" id="newInvestedValue" step=".01" name="newInvestedValue" required>
             
             <input type="submit" value="Invia">
         </form>
@@ -68,9 +68,9 @@
             <input type="number" id="deleteQuantity" name="deleteQuantity" required>
             
             <label for="deleteProfit">Profitto/Perdita:</label>
-            <input type="number" id="deleteProfit" name="deleteProfit" required>
+            <input type="number" id="deleteProfit" step=".01" name="deleteProfit" required>
             
-            <input type="hidden" id="deleteAssetId" name="deleteAssetId">
+            <input type="hidden" id="deleteAssetId" step=".01" name="deleteAssetId">
             
             <input type="submit" value="Conferma Eliminazione">
         </form>
@@ -79,27 +79,6 @@
 
 
 <script>
-    // Funzione di utilità per mostrare o nascondere i modali
-    function toggleModal(modalId, show) {
-        var modal = document.getElementById(modalId);
-        modal.style.display = show ? 'block' : 'none';
-    }
-
-    // Event listener per chiudere i modali quando si clicca fuori o si preme 'Esc'
-    window.onclick = function(event) {
-        if (event.target.classList.contains('modal')) {
-            toggleModal(event.target.id, false);
-        }
-    };
-    document.addEventListener('keydown', function(event) {
-        if (event.key === "Escape") {
-            var modals = document.getElementsByClassName('modal');
-            Array.from(modals).forEach(function(modal) {
-                toggleModal(modal.id, false);
-            });
-        }
-    });
-
     // Funzioni per aprire i modali specifici
     function addAsset(pk) {
         document.getElementById("addAssetId").value = pk;
@@ -112,13 +91,4 @@
     function newAsset() {
         toggleModal('newAssetModal', true);
     }
-    
-    // Event listener per chiudere i modali quando si clicca sul pulsante di chiusura
-    var closeButtons = document.getElementsByClassName('close');
-    Array.from(closeButtons).forEach(function(button) {
-        button.onclick = function() {
-            var modal = button.closest('.modal');
-            toggleModal(modal.id, false);
-        };
-    });
 </script>

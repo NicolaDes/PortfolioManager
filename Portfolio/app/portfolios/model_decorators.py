@@ -10,9 +10,20 @@ class AssetView:
 
         packet = requests.get('http://marketer:8000/'+self.model.ticker).json()
 
-        self._alpha = float(packet['alpha'])
-        self._beta = float(packet['beta'])
-        self._price = float(packet['eur'])
+        if packet['alpha'] is not None:
+            self._alpha = float(packet['alpha'])
+        else:
+            self._alpha = None
+        
+        if packet['beta'] is not None:
+            self._beta = float(packet['beta'])
+        else:
+            self._beta = None
+            
+        if packet['eur'] is not None:
+            self._price = float(packet['eur'])
+        else:
+            self._price = None
 
     def download(self):
         packet = requests.get('http://marketer:8000/'+self.model.ticker).json()
@@ -33,21 +44,22 @@ class AssetView:
         return self._price
 
 class AssetInPortfolioView:
-    def __init__(self, assetInPortfolio:AssetInPortfolio):
+    def __init__(self, assetInPortfolio:AssetInPortfolio, portfolioValue):
         self.model = assetInPortfolio
         self.currAv = AssetView(self.model.asset)
-
+        self.portfolioValue = portfolioValue
+        
     @property
     def alpha(self):
         if self.currAv.alpha is None:
             return None
-        return self.currAv.alpha * self.percentage
+        return self.currAv.alpha * self.percentage / 100.0
     
     @property
     def beta(self):
         if self.currAv.beta is None:
             return None
-        return self.currAv.beta * self.percentage
+        return self.currAv.beta * self.percentage / 100.0
 
     @property
     def value(self):
@@ -55,13 +67,9 @@ class AssetInPortfolioView:
     
     @property
     def percentage(self):
-        totalValue = float(self.model.portfolio.liquidity)
-        for a in self.model.portfolio.assets.all():
-            av = AssetView(a)
-            totalValue += float(self.model.quantity) * av.price
-        percentageOfPortfolio = (float(self.model.quantity) * self.currAv.price) / totalValue
+        percentageOfPortfolio = (float(self.model.quantity) * self.currAv.price) / self.portfolioValue
         return round((percentageOfPortfolio*100), 2)
-    
+        
     @property
     def drawdown(self):
         if self.model.invested <= 0:
@@ -72,10 +80,19 @@ class PortfolioView:
     def __init__(self, portfolio:Portfolio):
         self.model = portfolio
         self.assets = []
+        portfolioValue = self.downloadPortfolioValue()
+
         for aip in self.model.assetinportfolio_set.all():
-            self.assets.append(AssetInPortfolioView(aip))
+            self.assets.append(AssetInPortfolioView(aip, portfolioValue))
         self.assets.sort(key=lambda x: x.drawdown, reverse=True)
 
+    def downloadPortfolioValue(self):
+        totalValue = float(self.model.liquidity)
+        for a in self.model.assetinportfolio_set.all():
+            av = AssetView(a.asset)
+            totalValue += float(a.quantity) * av.price
+        return totalValue
+    
     @property
     def alpha(self):
         weightedAlpha = 0

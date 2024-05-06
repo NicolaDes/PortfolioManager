@@ -3,7 +3,7 @@
 {% load humanize %}
 
 {% block page_content %}
-<h1>{{ portfolio.model.name }}</h1>
+<h1>{{ portfolio.model.name }} <button onclick="editPortfolio({{ portfolio.model.pk }})">Edit</button></h1>
 <div id="portfolio-management">
   <div id="left-section">
     <section id="add-ticker">
@@ -26,5 +26,36 @@
   </div>
 
 </div>
+
+
+<!-- Popup Modale per Modificare i dati del portfolio -->
+<div id="editPortfolio" class="modal">
+  <div class="modal-content">
+      <span class="close">×</span>
+      <h1>Edit Portfolio Request</h1>
+      <form method="post" action="{% url 'edit_portfolio' pk=portfolio.model.pk %}" id="editPortfolioForm">
+          {% csrf_token %}
+          <label for="name">Name:</label>
+          <input type="string" id="name" name="name" value="{{portfolio.model.name}}" required>
+          
+          <label for="invested">Invested:</label>
+          <input type="number" id="invested" step=".01" name="invested" value={{portfolio.model.invested}} required>
+          
+          <label for="liquidity">Liquidity:</label>
+          <input type="number" id="liquidity" step=".01" name="liquidity" value="{{portfolio.model.liquidity}}" required>
+          
+          <input type="hidden" id="portfolioId" name="portfolioId">
+          
+          <input type="submit" value="Invia">
+      </form>
+  </div>
+</div>
+
+<script>
+  function editPortfolio(pk) {
+    document.getElementById("editPortfolio").value = pk;
+    toggleModal('editPortfolio', true);
+  }
+</script>
 
 {% endblock %}
