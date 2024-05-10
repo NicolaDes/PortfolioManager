@@ -1,0 +1,34 @@
+[
+    {
+        "model": "expenses.ruleInPortfolio",
+        "pk": 1,
+        "fields": {
+            "rule": 1,
+            "portfolio": 1
+        }
+    },
+    {
+        "model": "expenses.ruleInPortfolio",
+        "pk": 2,
+        "fields": {
+            "rule": 2,
+            "portfolio": 1
+        }
+    },
+    {
+        "model": "expenses.ruleInPortfolio",
+        "pk": 3,
+        "fields": {
+            "rule": 3,
+            "portfolio": 1
+        }
+    },
+    {
+        "model": "expenses.ruleInPortfolio",
+        "pk": 4,
+        "fields": {
+            "rule": 4,
+            "portfolio": 1
+        }
+    }
+]

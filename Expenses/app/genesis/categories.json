@@ -1,0 +1,29 @@
+[
+    {
+        "model": "expenses.category",
+        "pk": 1,
+        "fields": {
+            "archetype": "Income",
+            "classification": "Salary",
+            "group": "Salary"
+        }
+    },
+    {
+        "model": "expenses.category",
+        "pk": 2,
+        "fields": {
+            "archetype": "Outcome",
+            "classification": "Foods",
+            "group": "Intrattenimento"
+        }
+    },
+    {
+        "model": "expenses.category",
+        "pk": 3,
+        "fields": {
+            "archetype": "Outcome",
+            "classification": "Bar",
+            "group": "Intrattenimento"
+        }
+    }
+]

@@ -1,0 +1,9 @@
+[
+    {
+        "model": "expenses.portfolio",
+        "pk": 1,
+        "fields": {
+            "name": "Intesa san paolo"
+        }
+    }
+]

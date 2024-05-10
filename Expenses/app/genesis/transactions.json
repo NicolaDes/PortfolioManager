@@ -1,0 +1,15 @@
+[
+    {
+        "model": "expenses.transaction",
+        "pk": 1,
+        "fields": {
+            "value": -321.0,
+            "label": "Computer",
+            "description": "Spesa effettuata con carta XDIJCIDJF309134",
+            "date": "2024-11-02 12:01:22",
+            "percToExclude": 0.31,
+            "category": 1,
+            "portfolio": 1
+        }
+    }
+]

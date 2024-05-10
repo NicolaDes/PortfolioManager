@@ -1,24 +1,23 @@
 services:
-  portfolio-db:
+  expenses-db:
     image: postgres
-    container_name: portfolio-db
+    container_name: expenses-db
     volumes:
-      - ../__data/portfolios/db:/var/lib/postgresql/data
+      - ../__data/expenses/db:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-  portfolio-web:
+  expenses-web:
     build:
       context: .
-    command: bash -c "python manage.py runserver 0.0.0.0:9000"
-    container_name: portfolio
+    command: bash -c "python manage.py runserver 0.0.0.0:7000"
+    container_name: expenses
     ports:
-      - "9000:9000"
+      - "7000:7000"
     environment:
       - POSTGRES_NAME=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     depends_on:
-      - portfolio-db
-      - marketer
+      - expenses-db

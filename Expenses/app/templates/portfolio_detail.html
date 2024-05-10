@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+
+<h1>{{portfolio.name}}</h1>
+
+<div class="topnav">
+	<a>Details</a>
+	<a>Analytics</a>
+	<a>Edit</a>
+	<a>Add Transaction</a>
+</div>
+
+<div class="row">
+	<div class="leftcolumn">
+		<div class="card">
+			<h2>Transactions</h2>
+			<table class="styled-table" id="transactionsTable">
+				<thead>
+					<tr>
+						<th>
+							Id
+						</th>
+						<th>
+							Value
+						</th>
+						<th>
+							Label
+						</th>
+						<th>
+							Description
+						</th>
+						<th>
+							Date
+						</th>
+						<th>
+							Percentage to exclude
+						</th>
+						<th>
+							Category Type
+						</th>
+						<th>
+							Category Class
+						</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+                    {% for t in portfolio.transaction_set.all %}
+						<tr>
+							<td>
+								{{t.pk}}
+							</td>
+							<td>
+								{{t.value}}
+							</td>
+							<td>
+								{{t.label}}
+							</td>
+							<td>
+								{{t.description}}
+							</td>
+							<td>
+								{{t.date}}
+							</td>
+							<td>
+								{{t.percToExclude}}
+							</td>
+							<td>
+								{{t.category.classification}}
+							</td>
+							<td>
+								{{t.category.group}}
+							</td>
+							<td>
+								<a>Edit</a> |
+								<a>Details</a> |
+								<a>Delete</a>
+							</td>
+						</tr>
+                    {% endfor %}
+				</tbody>
+				<tfoot>
+					<tr>
+						<th>Total</th>
+						<th style="text-align:right">Total:</th>
+						<th></th>
+					</tr>
+				</tfoot>
+			</table>
+
+			<script>
+				$(document).ready(function () {
+					createTable();
+				});
+			</script>
+		</div>
+	</div>
+	<div class="rightcolumn">
+		<div class="card">
+			<h3>Reporting for Benni</h3>
+			
+		</div>
+		<div class="card">
+			<h3>Statistics</h3>
+			<div>
+				
+			</div>
+
+		</div>
+		<div class="card">
+			<h3>Upload Excel file</h3>
+			<form method="post" enctype="multipart/form-data">
+				{% csrf_token %}
+				{{ form.as_p }}
+
+				<label for="startingRow">Starting Row:</label>
+				<input type="number" id="startingRow" name="startingRow" value="20"><br>
+		
+				<label for="dateColumn">Date Column (Default: 0):</label>
+				<input type="number" id="dateColumn" name="dateColumn" value="0"><br>
+		
+				<label for="descriptionColumn">Description Column (Default: 2):</label>
+				<input type="number" id="descriptionColumn" name="descriptionColumn" value="2"><br>
+		
+				<label for="valueColumn">Value Column (Default: 7):</label>
+				<input type="number" id="valueColumn" name="valueColumn" value="7"><br>
+
+				<button type="submit">Upload</button>
+			</form>
+		</div>
+		<div class="card">
+			<h3>Active Rules</h3>
+			{% for rip in portfolio.ruleinportfolio_set.all %}
+			<p>{{rip.rule.name}} -> {{portfolio.name}}</p>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+{% endblock page_content %}
