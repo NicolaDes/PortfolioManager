@@ -32,7 +32,6 @@ class Rule(models.Model):
     regexpr = models.CharField(max_length=100, null=True)
     startDate = models.DateTimeField(null=True)
     endDate = models.DateTimeField(null=True)
-    txId = models.ForeignKey(Transaction, null=True, on_delete=models.CASCADE)
 
 class RuleInPortfolio(models.Model):
     rule = models.ForeignKey(Rule, on_delete=models.CASCADE)

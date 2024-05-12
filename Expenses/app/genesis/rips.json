@@ -22,13 +22,5 @@
             "rule": 3,
             "portfolio": 1
         }
-    },
-    {
-        "model": "expenses.ruleInPortfolio",
-        "pk": 4,
-        "fields": {
-            "rule": 4,
-            "portfolio": 1
-        }
     }
 ]
