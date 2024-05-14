@@ -9,4 +9,4 @@ COPY /app/ .
 
 RUN python manage.py makemigrations expenses
 RUN python manage.py migrate expenses
-RUN python manage.py loaddata genesis/*.json
+# RUN python manage.py loaddata genesis/*.json

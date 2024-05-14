@@ -1,10 +1,13 @@
-import re
+import json
 from datetime import datetime
 import pandas as pd
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
+from django.http import JsonResponse
+
+from expenses.models import Portfolio, Transaction, Rule, RuleInPortfolio
 
 from .rules import applyRules
 from ..forms import ExcelUploadForm
@@ -40,3 +43,42 @@ def portfolio_detail(request, pk):
     }
 
     return render(request, "portfolio_detail.html", context)
+
+def portfolio_rules(request, pk):
+    portfolio = Portfolio.objects.get(pk=pk)
+    
+    rips = set(rule_in_portfolio.rule for rule_in_portfolio in portfolio.ruleinportfolio_set.all())
+    rules = set(Rule.objects.all())
+
+    notRips = rules - rips
+
+    context = {
+        "portfolio": portfolio,
+        "rips": rips,
+        "notRips": notRips 
+    }
+
+    return render(request, "portfolio_rules.html", context)
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def portfolio_assign_rules(request):
+
+    rawData = json.loads(request.body)
+    portfolioPk = rawData['portfolioPk']
+    rules = rawData['assignedRules']
+    
+    portfolio = Portfolio.objects.get(pk=portfolioPk)
+    
+    portfolio.ruleinportfolio_set.all().delete()
+
+    assignedRules = []
+
+    for r in rules:
+        rule = Rule.objects.get(pk=r)
+        rip = RuleInPortfolio(rule=rule, portfolio=portfolio)
+        rip.save()
+
+        assignedRules.append(rip.pk)
+    
+    return JsonResponse({'message': f'Regole assegnate: {assignedRules}'})

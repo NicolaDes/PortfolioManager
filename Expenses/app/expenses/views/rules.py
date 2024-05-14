@@ -1,12 +1,9 @@
 import re
-from datetime import datetime
-import pandas as pd
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from django.utils import timezone
 
-from expenses.models import *
+from expenses.models import Rule, Category
 
 def applyRule(transaction, rule):
     if transaction.label is not None or transaction.category is not None:
