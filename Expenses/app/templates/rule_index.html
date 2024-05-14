@@ -48,7 +48,7 @@
                         {{rule.percentage}}
                     </td>
                     <td>
-                        {{rule.category.name}}
+                        {{rule.category.classification}}
                     </td>
                     <td>
                         {{rule.regexpr}}
@@ -87,7 +87,11 @@
             <label for="percentage">Percentage:</label>
             <input type="number" name="editPercentage" id="editPercentage" step="0.01" required><br>
             <label for="categoryPk">Category:</label>
-            <input type="number" name="editCategoryPk" id="editCategoryPk" required><br>
+            <select name="editCategoryPk" id="editCategoryPk" required>
+                {% for category in categories %}
+                    <option value="{{ category.pk }}">{{ category.classification }}</option>
+                {% endfor %}
+            </select><br>
             <label for="type">Type:</label>
             <select name="editRuleType" onchange="showEditFields()">
                 <option value="regexpr">Regular Expression</option>
@@ -123,7 +127,11 @@
             <label for="percentage">Percentage:</label>
             <input type="number" name="percentage" step="0.01" required><br>
             <label for="categoryPk">Category:</label>
-            <input type="number" name="categoryPk" required><br>
+            <select name="categoryPk" id="categoryPk" required>
+                {% for category in categories %}
+                    <option value="{{ category.pk }}">{{ category.classification }}</option>
+                {% endfor %}
+            </select><br>
             <label for="type">Type:</label>
             <select name="newRuleType" onchange="showNewFields()">
                 <option value="regexpr">Regular Expression</option>

@@ -8,16 +8,8 @@ from expenses.models import Rule, Category
 def applyRule(transaction, rule):
     if transaction.label is not None or transaction.category is not None:
         return
-    if rule.txId is not None:
-        if rule.txId.pk == transaction.pk:
-            transaction.percToExclude = rule.percentage
-            transaction.label = rule.label
-            transaction.category = rule.category
-
-            transaction.save()
-    elif rule.startDate is not None and rule.endDate is not None:
+    if rule.startDate is not None and rule.endDate is not None:
         if transaction.date >= rule.startDate and transaction.date <= rule.endDate:
-            print(f"Applying date rule for {transaction.description}")
             transaction.percToExclude = rule.percentage
             transaction.label = rule.label
             transaction.category = rule.category
@@ -26,7 +18,7 @@ def applyRule(transaction, rule):
     elif rule.regexpr is not None:
         found = False
         for s in rule.regexpr.split(','):
-            pattern = r"(?i)\b" + s + r"\b"
+            pattern = r"(?i).*" + s + r".*"
             if re.findall(pattern, transaction.description):
                 found = True
                 break
@@ -44,9 +36,11 @@ def applyRules(portfolio):
 
 def index(request):
     rules = Rule.objects.all()
+    categories = Category.objects.all()
 
     context = {
-        "rules": rules
+        "rules": rules,
+        "categories": categories
     }
 
     return render(request, "rule_index.html", context)

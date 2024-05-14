@@ -7,7 +7,7 @@ from django.views.decorators.http import require_http_methods
 from django.utils import timezone
 from django.http import JsonResponse
 
-from expenses.models import Portfolio, Transaction, Rule, RuleInPortfolio
+from expenses.models import Portfolio, Transaction, Rule, RuleInPortfolio, Category
 
 from .rules import applyRules
 from ..forms import ExcelUploadForm
@@ -37,8 +37,16 @@ def portfolio_detail(request, pk):
         form = ExcelUploadForm()
 
 
+    toBeDecidedCategory = Category.objects.filter(classification="ToBeDecided").first()
+    nUncategorized = Transaction.objects.filter(portfolio=portfolio, category__isnull=True).count()
+    nToBeDecided = Transaction.objects.filter(portfolio=portfolio, category=toBeDecidedCategory).count()
+    categories = Category.objects.all()
+
     context = {
         "portfolio": portfolio,
+        "nUncategorized": nUncategorized,
+        "nToBeDecided": nToBeDecided,
+        "categories": categories,
         "form": form
     }
 
