@@ -24,7 +24,7 @@ def edit(request):
     transaction.value = value
     transaction.description = description
     transaction.date = date
-    transaction.percentageToExclude = percentage
+    transaction.percToExclude = percentage
     transaction.label = label
     transaction.portfolio = portfolio
     transaction.category = category

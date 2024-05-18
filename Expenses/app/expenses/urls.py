@@ -20,5 +20,6 @@ urlpatterns = [
     path("categories/create", categories.create, name='new_category'),
     path("categories/edit", categories.edit, name='edit_category'),
     path("rules/assign", portfolios.portfolio_assign_rules, name="portfolio_assign_rules"),
-    path("transactions/edit", transactions.edit, name="transaction_edit")
+    path("transactions/edit", transactions.edit, name="transaction_edit"),
+    path("<int:pk>/analytics/<int:year>", portfolios.analytics, name="portfolio_analytics")
 ]

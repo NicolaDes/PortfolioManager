@@ -1,404 +1,91 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
-
-function expensesPieChart(pId) {
-    var year = document.getElementById("yearSelect").value;
-    var month = document.getElementById("monthSelect").value;
-    var monthDesc = "All";
-    if (month != -1) {
-        monthDesc = "" + month;
-    }
-    $.getJSON("/Analytics/CategoriesYearly/"+pId+"?year=" + year + "&month=" + month + "&type=Outcome", function (data) {
-
-        let serie = [];
-        for (let i in data) {
-            serie.push({
-                name: i,
-                y: Math.abs(data[i])
-            });
+﻿
+// Serie should be [{name: "label1", y: data1}, ..., {name: "labelN", y: dataN}
+function pieChart(serie, container, pieName, title)
+{
+    Highcharts.chart(container, {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: title,
+            align: 'left'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.y:.1f} €</b>'
+        },
+        accessibility: {
+            point: {
+                valueSuffix: '%'
+            }
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                },
+                showInLegend: true
+            }
+        },
+        series: [{
+            name: pieName,
+            colorByPoint: true,
+            data: serie
+        }],
+        credits: {
+            enabled: false
         }
-
-        Highcharts.chart('expensesPieChartContainer', {
-            chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false,
-                type: 'pie'
-            },
-            title: {
-                text: 'Expenses By Category for year/month:' + year + '/' + monthDesc,
-                align: 'left'
-            },
-            tooltip: {
-                pointFormat: '{series.name}: <b>{point.y:.1f} €</b>'
-            },
-            accessibility: {
-                point: {
-                    valueSuffix: '%'
-                }
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-                    }
-                }
-            },
-            series: [{
-                name: 'Categories',
-                colorByPoint: true,
-                data: serie
-            }]
-        });
-    });
-};
-
-function expensesLabelsPieChart(pId) {
-    var year = document.getElementById("yearSelect").value;
-    var month = document.getElementById("monthSelect").value;
-    var monthDesc = "All";
-    if (month != -1) {
-        monthDesc = "" + month;
-    }
-    console.log("Waglio!");
-    $.getJSON("/Analytics/LabelsYearly/" + pId + "?year=" + year + "&month=" + month + "&type=Outcome", function (data) {
-
-        let serie = [];
-        for (let i in data) {
-            serie.push({
-                name: i,
-                y: Math.abs(data[i])
-            });
-        }
-
-        console.log(serie);
-
-        Highcharts.chart('expensesLabelsPieChartContainer', {
-            chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false,
-                type: 'pie'
-            },
-            title: {
-                text: 'Expenses by Labels for year/month:' + year + '/' + monthDesc,
-                align: 'left'
-            },
-            tooltip: {
-                pointFormat: '{series.name}: <b>{point.y:.1f} €</b>'
-            },
-            accessibility: {
-                point: {
-                    valueSuffix: '%'
-                }
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-                    }
-                }
-            },
-            series: [{
-                name: 'Categories',
-                colorByPoint: true,
-                data: serie
-            }]
-        });
-    });
-};
-
-function expensesColumnChart(pId) {
-    var year = document.getElementById("yearSelect").value;
-    $.getJSON("/Analytics/CategoriesByMonthYearly/"+pId+"?year=" + year + "&type=Outcome", function (dta) {
-
-        let serie = [];
-        for (let i in dta) {
-            serie.push({
-                name: i,
-                data: dta[i]
-            });
-        }
-
-        Highcharts.chart('expensesColumnChartContainer', {
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: 'Expenses for year ' + year,
-            },
-            yAxis: {
-                title: {
-                    text: "Eur"
-                }
-            },
-            xAxis: {
-                categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                title: {
-                    text: "Months"
-                }
-            },
-            plotOptions: {
-                series: {
-                    stacking: 'normal',
-                    dataLabels: {
-                        enabled: false
-                    }
-                }
-            },
-            series: serie
-        });
-    });
-};
-
-function yearlyIncomeExpensesChart(pId) {
-    var year = document.getElementById("yearSelect").value;
-    $.getJSON("/Analytics/YearlyIncomExpenses/" + pId + "?year=" + year + "&type=Outcome", function (dta) {
-        let serie = [];
-        for (let i in dta) {
-            serie.push({
-                name: i,
-                y: dta[i]
-            });
-        }
-
-        console.log("Ciaone: ", serie)
-
-        Highcharts.chart('yearlyIncomeExpenses', {
-            chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false,
-                type: 'pie'
-            },
-            title: {
-                text: 'Income/Expenses' + year,
-                align: 'left'
-            },
-            tooltip: {
-                pointFormat: '{series.name}: <b>{point.y:.1f} €</b>'
-            },
-            accessibility: {
-                point: {
-                    valueSuffix: '%'
-                }
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-                    }
-                }
-            },
-            series: [{
-                name: 'Type',
-                colorByPoint: true,
-                data: serie
-            }]
-        });
     });
 }
 
-function incomePieChart(pId) {
-    var year = document.getElementById("yearSelect").value;
-    var month = document.getElementById("monthSelect").value;
-    var monthDesc = "All";
-    if (month != -1) {
-        monthDesc = "" + month;
-    }
-    $.getJSON("/Analytics/CategoriesYearly/" + pId + "?year=" + year + "&month=" + month + "&type=Income", function (data) {
+// serie := [{name: 'Cat1', data: [1, 4, 31, 23, ..., 32]}]
+// categories := ['Jan', 'Feb', ..., 'Dec']
+function columnStackChart(serie, categories, container, title, yAxisLabel) {
+    console.log(serie);
+    console.log(categories);
 
-        let serie = [];
-        for (let i in data) {
-            serie.push({
-                name: i,
-                y: Math.abs(data[i])
-            });
-        }
-
-        Highcharts.chart('incomePieChartContainer', {
-            chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false,
-                type: 'pie'
-            },
-            title: {
-                text: 'Income for year/month:' + year + '/' + monthDesc,
-                align: 'left'
-            },
-            tooltip: {
-                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-            },
-            accessibility: {
-                point: {
-                    valueSuffix: '%'
-                }
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-                    }
-                }
-            },
-            series: [{
-                name: 'Categories',
-                colorByPoint: true,
-                data: serie
-            }]
-        });
-    });
-};
-
-function incomeColumnChart(pId) {
-    var year = document.getElementById("yearSelect").value;
-    $.getJSON("/Analytics/CategoriesByMonthYearly/" + pId + "?year=" + year + "&type=Income", function (dta) {
-
-        let serie = [];
-        for (let i in dta) {
-            serie.push({
-                name: i,
-                data: dta[i]
-            });
-        }
-
-        Highcharts.chart('incomeColumnChartContainer', {
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: 'Income for year ' + year,
-            },
-            yAxis: {
-                title: {
-                    text: "Eur"
-                }
-            },
-            xAxis: {
-                categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                title: {
-                    text: "Months"
-                }
-            },
-            plotOptions: {
-                series: {
-                    stacking: 'normal',
-                    dataLabels: {
-                        enabled: false
-                    }
-                }
-            },
-            series: serie
-        });
-    });
-};
-
-function incomeLineChart(pId) {
-    var year = document.getElementById("yearSelect").value;
-    $.getJSON("/Analytics/IncomeCategoriesByMonthYearly/" + pId + "?year=" + year, function (dta) {
-
-        let serie = [];
-        let cashFlow = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        let cumulativeCashFlow = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-        serie.push({
-            name: "Salary",
+    const chartData = {
+        chart: {
             type: 'column',
-            data: dta["Salary"],
-            color: '#b2e061'
-        });
-
-        serie.push({
-            name: "Outcome",
-            type: 'column',
-            data: dta["Outcome"],
-            color: '#fd7f6f'
-        });
-
-        for (let i = 0; i < 12; ++i) {
-            cashFlow[i] = dta["Salary"][i] + dta["Outcome"][i];
-            if (i == 0) {
-                cumulativeCashFlow[0] = cashFlow[0];
-            }
-            else {
-                cumulativeCashFlow[i] = cumulativeCashFlow[i - 1] + cashFlow[i];
-            }
-        }
-
-        serie.push({
-            name: 'CashFlow',
-            type: 'spline',
-            color: 'blue',
-            data: cashFlow
-        });
-
-        serie.push({
-            name: 'Cumulative Cash Flow',
-            type: 'area',
-            color: '#ffb55a',
-            data: cumulativeCashFlow
-        });
-
-        Highcharts.chart('incomeLineChartContainer', {
+        },
+        title: {
+            text: title,
+            align: 'left'
+        },
+        xAxis: {
+            categories: categories,
+        },
+        yAxis: {
             title: {
-                text: 'Income for year ' + year,
+                text: yAxisLabel,
             },
-            yAxis: {
-                title: {
-                    text: "Eur"
+            stackLabels: {
+                enabled: false
+            }
+        },
+        tooltip: {
+            headerFormat: '<b>{point.x}</b><br/>',
+            pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+        },
+        plotOptions: {
+            column: {
+                stacking: 'normal',
+                dataLabels: {
+                    enabled : false
                 }
-            },
-            xAxis: {
-                categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                title: {
-                    text: "Months"
-                }
-            },
-            plotOptions: {
-                series: {
-                    stacking: 'normal',
-                    dataLabels: {
-                        enabled: false
-                    }
-                }
-            },
-            series: serie
-        });
-    });
-};
+            }
+        },
+        series: serie
+    };
 
-function paintPieCharts(pId) {
-    expensesPieChart(pId);
-    expensesLabelsPieChart(pId);
-    //incomePieChart(pId);
-};
-
-function paintColumnCharts(pId) {
-    expensesColumnChart(pId);
-    //incomeColumnChart(pId);
-};
-
-function paintAllCharts(pId) {
-    paintPieCharts(pId);
-    yearlyIncomeExpensesChart(pId);
-    paintColumnCharts(pId);
-    incomeLineChart(pId);
+    Highcharts.chart(container, chartData);
 }
+
 
 // Remove the formatting to get integer data for summation
 function intVal(i) {
@@ -487,22 +174,5 @@ function createTable() {
                     }
                 });
         },
-    });
-}
-
-
-function createAssetTable() {
-    // Setup - add a text input to each footer cell
-    var cryptoTable = $('#cryptoAssetsTable').DataTable({
-        orderCellsTop: true,
-        fixedHeader: true
-    });
-    var nftsTable = $('#nftsAssetsTable').DataTable({
-        orderCellsTop: true,
-        fixedHeader: true
-    });
-    var stocksTable = $('#stocksAssetsTable').DataTable({
-        orderCellsTop: true,
-        fixedHeader: true
     });
 }

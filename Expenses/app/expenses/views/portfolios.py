@@ -6,6 +6,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
 from django.http import JsonResponse
+from django.db.models import Sum, F, Case, When, Value
+from django.db.models.functions import TruncMonth
 
 from expenses.models import Portfolio, Transaction, Rule, RuleInPortfolio, Category
 
@@ -41,9 +43,11 @@ def portfolio_detail(request, pk):
     nUncategorized = Transaction.objects.filter(portfolio=portfolio, category__isnull=True).count()
     nToBeDecided = Transaction.objects.filter(portfolio=portfolio, category=toBeDecidedCategory).count()
     categories = Category.objects.all()
+    nTransactions = portfolio.transaction_set.all().count()
 
     context = {
         "portfolio": portfolio,
+        "nTransactions": nTransactions,
         "nUncategorized": nUncategorized,
         "nToBeDecided": nToBeDecided,
         "categories": categories,
@@ -90,3 +94,81 @@ def portfolio_assign_rules(request):
         assignedRules.append(rip.pk)
     
     return JsonResponse({'message': f'Regole assegnate: {assignedRules}'})
+
+def expensesByCategory(transactions):
+    txts = transactions.annotate(total_value=Case(When(category__archetype='Expense', then=F('value') - F('percToExclude') * F('value')),default=F('value'))).values('category__classification').annotate(total_sum=Sum('total_value'))
+    return [{"name": str(item['category__classification']), "y": abs(float(item['total_sum']))} for item in txts]
+
+def analytics(request, pk, year):
+    portfolio = Portfolio.objects.get(pk=pk)
+
+    # Expenses by category
+    expensesByCategory = [
+        {
+            "name": str(item['category__classification']), 
+            "y": abs(float(item['total_sum']))} 
+            for item in Transaction.objects.filter(portfolio=portfolio, date__year=year, category__archetype='Outcome')
+                .annotate(total_value=Case(When(category__archetype='Outcome', then=F('value') - F('percToExclude') * F('value')),default=F('value')))
+                .values('category__classification')
+                .annotate(total_sum=Sum('total_value'))
+        ]
+
+
+    # Expenses by label
+    expensesByLabel = [
+        {
+            "name": str(item['label']), 
+            "y": abs(float(item['total_sum']))} 
+            for item in Transaction.objects.filter(portfolio=portfolio, date__year=year, category__archetype='Outcome')
+                .annotate(total_value=Case(When(category__archetype='Outcome', then=F('value') - F('percToExclude') * F('value')),default=F('value')))
+                .values('label')
+                .annotate(total_sum=Sum('total_value'))
+        ]
+
+    # Monlty expsenses by category
+    expensesMonthlyByCategory = []
+    
+    for c in Category.objects.all().exclude(archetype='Income'):
+
+        montlyData = []
+        for month in range(1, 13):
+            res = Transaction.objects.filter(portfolio=portfolio, category=c, date__year=year, date__month=month).annotate(total_value=Case(When(category__archetype='Outcome', then=F('value') - F('percToExclude') * F('value')),default=F('value'))).values('category__classification').annotate(total_sum=Sum('total_value'))
+            sumValue = 0
+            if res:
+                sumValue = float(res[0]['total_sum'])
+            montlyData.append(sumValue)
+        
+        if not all(value == 0 for value in montlyData):
+            expensesMonthlyByCategory.append({
+                "name": str(c.classification),
+                "data": montlyData 
+            })
+
+    # Montly expenses by label
+    expensesMonthlyByLabel = []
+    
+    for el in portfolio.transaction_set.filter(date__year=year).values('label').distinct():
+        l = el['label']
+        montlyData = []
+        for month in range(1, 13):
+            res = Transaction.objects.filter(portfolio=portfolio, label=l, date__year=year, date__month=month, category__archetype='Outcome').annotate(total_value=Case(When(category__archetype='Outcome', then=F('value') - F('percToExclude') * F('value')),default=F('value'))).values('label').annotate(total_sum=Sum('total_value'))
+            sumValue = 0
+            if res:
+                sumValue = float(res[0]['total_sum'])
+            montlyData.append(sumValue)
+
+        if not all(value == 0 for value in montlyData):
+            expensesMonthlyByLabel.append({
+                "name": str(l),
+                "data": montlyData 
+            })
+
+    context = {
+        "portfolio": portfolio,
+        "expensesByCategory": expensesByCategory,
+        "expensesByLabel": expensesByLabel,
+        "montlyExpensesByCategory": expensesMonthlyByCategory,
+        "montlyExpensesByLabel": expensesMonthlyByLabel
+    }
+
+    return render(request, "portfolio_analytics.html", context)

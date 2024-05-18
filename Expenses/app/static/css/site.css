@@ -42,7 +42,7 @@ body {
 /* Style the top navigation bar */
 .topnav {
     overflow: hidden;
-    background-color: #333;
+    background-color: #0ABAB5;
 }
 
     /* Style the topnav links */
@@ -159,7 +159,7 @@ body {
 }
 
 [type=search] {
-    background-image: url("{% static 'css/searchicon.png' %}");
+    background-image: url("/static/css/searchicon.png");
     background-position: 10px 10px;
     background-repeat: no-repeat;
     padding: 5px 20px 5px 40px !important;
