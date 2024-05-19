@@ -163,12 +163,49 @@ def analytics(request, pk, year):
                 "data": montlyData 
             })
 
+    # Cashflow
+    totalMontlyByCategory = []
+    
+    for c in Category.objects.all().exclude(group='Excluded'):
+
+        montlyData = []
+        for month in range(1, 13):
+            res = Transaction.objects.filter(portfolio=portfolio, category=c, date__year=year, date__month=month).annotate(total_value=F('value') - F('percToExclude') * F('value')).values('category__classification').annotate(total_sum=Sum('total_value'))
+            sumValue = 0
+            if res:
+                sumValue = float(res[0]['total_sum'])
+            montlyData.append(sumValue)
+        
+        if not all(value == 0 for value in montlyData):
+            totalMontlyByCategory.append({
+                "name": str(c.classification),
+                "data": montlyData 
+            })
+
+    cashFlow = []
+    cumulativeCashFlow = []
+    for month in range(1, 13):
+        sumValue = Transaction.objects.filter(portfolio=portfolio, date__year=year, date__month=month).exclude(category__group='Excluded').exclude(category__group='Investments').annotate(total_value=F('value') - F('percToExclude') * F('value')).aggregate(total_sum=Sum('total_value'))['total_sum']
+
+        if sumValue is not None:
+            cashFlow.append(float(sumValue))
+        else:
+            cashFlow.append(float(0))
+    
+        if len(cumulativeCashFlow) > 0:
+            cumulativeCashFlow.append(cumulativeCashFlow[-1] + cashFlow[-1])
+        else:
+            cumulativeCashFlow.append(cashFlow[-1])
+
     context = {
         "portfolio": portfolio,
         "expensesByCategory": expensesByCategory,
         "expensesByLabel": expensesByLabel,
         "montlyExpensesByCategory": expensesMonthlyByCategory,
-        "montlyExpensesByLabel": expensesMonthlyByLabel
+        "montlyExpensesByLabel": expensesMonthlyByLabel,
+        "allByCategory": totalMontlyByCategory,
+        "cashFlowByMonth": cashFlow,
+        "cumulativeCashFlowByMonth": cumulativeCashFlow
     }
 
     return render(request, "portfolio_analytics.html", context)

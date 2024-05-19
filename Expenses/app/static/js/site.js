@@ -86,6 +86,42 @@ function columnStackChart(serie, categories, container, title, yAxisLabel) {
     Highcharts.chart(container, chartData);
 }
 
+function lineChart(series, yAxis, container, title, yAxisLabel) {
+    Highcharts.chart(container, {
+        chart: {
+            type: 'spline'
+        },
+        title: {
+            text: title
+        },
+        xAxis: {
+            categories: yAxis
+        },
+        yAxis: {
+            title: {
+                text: yAxisLabel
+            }
+        },
+        tooltip: {
+            crosshairs: true,
+            shared: true
+        },
+        plotOptions: {
+            spline: {
+                marker: {
+                    radius: 4,
+                    lineColor: '#666666',
+                    lineWidth: 1
+                }
+            }
+        },
+        series: series.map(serie => ({
+            data: serie
+        }))
+    });
+
+}
+
 
 // Remove the formatting to get integer data for summation
 function intVal(i) {

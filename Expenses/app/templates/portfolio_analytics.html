@@ -43,6 +43,18 @@
 				</figure>
 			</div>
 
+			<div>
+				<figure class="highcharts-figure">
+					<div id="allByCategory"></div>
+				</figure>
+			</div>
+
+			<div>
+				<figure class="highcharts-figure">
+					<div id="cashFlowByMonth"></div>
+				</figure>
+			</div>
+
 		</div>
 
 		<div class="card">
@@ -122,6 +134,8 @@
 		pieChart({{expensesByLabel}}, "expensesByLabel", "Labels", "Expenses by label");
 		columnStackChart({{montlyExpensesByCategory}}, ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "montlyExpensesByCategory", "Category Expenses by month", "Months");
 		columnStackChart({{montlyExpensesByLabel}}, ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "montlyExpensesByLabel", "Label Expenses by month", "Months");
+		columnStackChart({{allByCategory}}, ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "allByCategory", "Category by month", "Months");
+		lineChart([{{cashFlowByMonth}}, {{cumulativeCashFlowByMonth}}], ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "cashFlowByMonth", "Cashflow", "Months");
 		{% endautoescape %}
   	};
 
