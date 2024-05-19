@@ -1,0 +1,23 @@
+services:
+  expenses-db:
+    image: postgres
+    container_name: expenses-db
+    volumes:
+      - ../__data/expenses/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  expenses-web:
+    build:
+      context: .
+    command: bash -c "python manage.py runserver 0.0.0.0:7000"
+    container_name: expenses
+    ports:
+      - "7000:7000"
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    depends_on:
+      - expenses-db

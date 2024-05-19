@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+
+{% block page_content %}
+
+<div>
+    <h1>Portfolios</h1>
+
+    {% for p in portfolios %}
+        <div class="card-body">
+            <h5 class="card-title">{{ p.name }}</h5>
+            <a href="{% url 'portfolio_detail' p.pk %}"
+            class="btn btn-primary">
+                Read More
+            </a>
+        </div>
+
+    {% endfor %}
+</div>
+{% endblock page_content %}

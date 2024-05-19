@@ -13,9 +13,12 @@ from portfolios.models import Portfolio, Asset, AssetInPortfolio
 
 # Create your views here.
 def portfolio_index(request):
-    portfolios = Portfolio.objects.all()
+    portfoliosInView = []
+    for portfolio in Portfolio.objects.all():
+        portfoliosInView.append(PortfolioView(portfolio=portfolio))
+
     context = {
-        "portfolios": portfolios
+        "portfolios": portfoliosInView
     }
 
     return render(request, "portfolios/portfolio_index.html", context)
@@ -38,6 +41,22 @@ def create_portfolio(request):
         form = PortfolioForm()
         
     return render(request, 'portfolio_form.html', {'form': form})
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def edit_portfolio(request, pk):
+    name = request.POST.get('name')
+    invested = Decimal(request.POST.get('invested'))
+    liquidity = Decimal(request.POST.get('liquidity'))
+
+    portfolio = Portfolio.objects.get(pk=pk)
+    portfolio.name = name
+    portfolio.invested = invested
+    portfolio.liquidity = liquidity
+
+    portfolio.save()
+
+    return redirect("portfolio_index")
 
 @csrf_exempt
 @require_http_methods(["POST"])

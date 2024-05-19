@@ -2,3 +2,5 @@ __data/
 __pycache__/
 tmp/
 venv/
+backups/
+backup/

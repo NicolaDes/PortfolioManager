@@ -1,13 +1,14 @@
 services:
-  db:
+  portfolio-db:
     image: postgres
+    container_name: portfolio-db
     volumes:
-      - ../__data/db:/var/lib/postgresql/data
+      - ../__data/portfolios/db:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-  web:
+  portfolio-web:
     build:
       context: .
     command: bash -c "python manage.py runserver 0.0.0.0:9000"
@@ -19,5 +20,5 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     depends_on:
-      - db
+      - portfolio-db
       - marketer

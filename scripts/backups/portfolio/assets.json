@@ -1,0 +1,184 @@
+[
+{
+  "model": "portfolios.asset",
+  "pk": 1,
+  "fields": {
+    "ticker": "SOL"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 2,
+  "fields": {
+    "ticker": "PYTH"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 3,
+  "fields": {
+    "ticker": "SEI"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 4,
+  "fields": {
+    "ticker": "INJ"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 5,
+  "fields": {
+    "ticker": "FIL"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 6,
+  "fields": {
+    "ticker": "JUP"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 7,
+  "fields": {
+    "ticker": "SNX"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 8,
+  "fields": {
+    "ticker": "ATOM"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 9,
+  "fields": {
+    "ticker": "FXS"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 10,
+  "fields": {
+    "ticker": "HNT"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 11,
+  "fields": {
+    "ticker": "W"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 12,
+  "fields": {
+    "ticker": "FLOW"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 13,
+  "fields": {
+    "ticker": "ALGO"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 14,
+  "fields": {
+    "ticker": "SCRT"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 15,
+  "fields": {
+    "ticker": "MATIC"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 16,
+  "fields": {
+    "ticker": "LINK"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 17,
+  "fields": {
+    "ticker": "AVAX"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 18,
+  "fields": {
+    "ticker": "RNDR"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 19,
+  "fields": {
+    "ticker": "POLIS"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 20,
+  "fields": {
+    "ticker": "oogy"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 21,
+  "fields": {
+    "ticker": "theheist"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 22,
+  "fields": {
+    "ticker": "the_heist_land"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 23,
+  "fields": {
+    "ticker": "PF4"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 24,
+  "fields": {
+    "ticker": "torrino_dao_collection"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 25,
+  "fields": {
+    "ticker": "IOT"
+  }
+},
+{
+  "model": "portfolios.asset",
+  "pk": 26,
+  "fields": {
+    "ticker": "KIWI"
+  }
+}
+]

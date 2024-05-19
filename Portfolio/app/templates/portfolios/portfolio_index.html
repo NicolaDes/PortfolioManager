@@ -7,14 +7,7 @@
 {% for portfolio in portfolios %}
     <div class="col-md-4">
         <div class="card mb-2">
-            <div class="card-body">
-                <h5 class="card-title">{{ portfolio.title }}</h5>
-                <p class="card-text">{{ portfolio.description }}</p>
-                <a href="{% url 'portfolio_detail' portfolio.pk %}"
-                   class="btn btn-primary">
-                    Read More
-                </a>
-            </div>
+            {% include "widgets/portfolio.html" with portfolio=portfolio %}
         </div>
     </div>
     {% endfor %}

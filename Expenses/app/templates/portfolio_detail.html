@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+
+<h1>{{portfolio.name}}</h1>
+
+<div class="topnav">
+	<a href="{% url 'portfolio_detail' portfolio.pk %}">Details</a>
+	<a href="{% url 'portfolio_rules' portfolio.pk %}">Assigned Rules</a>
+	<a href="{% url 'rule_index' %}">Rules</a>
+	<a href="{% url 'category_index' %}">Categories</a>
+	<a href="{% url 'portfolio_analytics' pk=portfolio.pk year=2024 %}">Analytics</a>
+</div>
+
+<div class="row">
+	<div class="leftcolumn">
+		<div class="card">
+			<h2>Transactions</h2>
+			<table class="styled-table" id="transactionsTable">
+				<thead>
+					<tr>
+						<th>
+							Id
+						</th>
+						<th>
+							Value
+						</th>
+						<th>
+							Label
+						</th>
+						<th>
+							Description
+						</th>
+						<th>
+							Date
+						</th>
+						<th>
+							Percentage to exclude
+						</th>
+						<th>
+							Category Type
+						</th>
+						<th>
+							Category Class
+						</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+                    {% for t in portfolio.transaction_set.all %}
+						<tr>
+							<td>
+								{{t.pk}}
+							</td>
+							<td>
+								{{t.value}}
+							</td>
+							<td>
+								{{t.label}}
+							</td>
+							<td>
+								{{t.description}}
+							</td>
+							<td>
+								{{t.date}}
+							</td>
+							<td>
+								{{t.percToExclude}}
+							</td>
+							<td>
+								{{t.category.classification}}
+							</td>
+							<td>
+								{{t.category.group}}
+							</td>
+							<td>
+								<button onclick="editTransaction({{t.pk}}, {{t.value}}, '{{t.description}}', '{{t.date|date:"d/m/Y H:i:s"}}', {{t.percToExclude}}, '{{t.label}}', {{t.category.pk}})">Edit</button>
+								<form action="{% url 'transaction_delete' pk=t.pk %}" method="post" id="delete-form">
+									{% csrf_token %}
+									<button type="submit" onclick="return confirm('Sei sicuro di voler eliminare questo elemento?')">Delete</button>
+								</form>
+							</td>
+						</tr>
+                    {% endfor %}
+				</tbody>
+				<tfoot>
+					<tr>
+						<th>Total</th>
+						<th style="text-align:right">Total:</th>
+						<th></th>
+					</tr>
+				</tfoot>
+			</table>
+
+			<script>
+				$(document).ready(function () {
+					createTable();
+				});
+			</script>
+		</div>
+	</div>
+	<div class="rightcolumn">
+		<div class="card">
+			<h3>Reporting for Benni</h3>
+			
+		</div>
+		<div class="card">
+			<h3>Statistics</h3>
+			<div>
+				<table class="styled-table">
+					<thead>
+						<tr>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								Total Transactions
+							</td>
+							<td>
+								{{nTransactions}}
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Uncategorized
+							</td>
+							<td>
+								{{nUncategorized}}
+							</td>
+						</tr>
+						<tr>
+							<td>
+								To Be Decided
+							</td>
+							<td>
+								{{nToBeDecided}}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+		<div class="card">
+			<h3>Upload Excel file</h3>
+			<form method="post" enctype="multipart/form-data">
+				{% csrf_token %}
+				{{ form.as_p }}
+
+				<label for="startingRow">Starting Row:</label>
+				<input type="number" id="startingRow" name="startingRow" value="20"><br>
+		
+				<label for="dateColumn">Date Column (Default: 0):</label>
+				<input type="number" id="dateColumn" name="dateColumn" value="0"><br>
+		
+				<label for="descriptionColumn">Description Column (Default: 2):</label>
+				<input type="number" id="descriptionColumn" name="descriptionColumn" value="2"><br>
+		
+				<label for="valueColumn">Value Column (Default: 7):</label>
+				<input type="number" id="valueColumn" name="valueColumn" value="7"><br>
+
+				<button type="submit">Upload</button>
+			</form>
+		</div>
+		<div class="card">
+			<h3>Active Rules</h3>
+			{% for rip in portfolio.ruleinportfolio_set.all %}
+			<p>{{rip.rule.name}}</p>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+<!-- The Modal -->
+<div id="editTransactionModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">×</span>
+        <form method="post" action="{% url 'transaction_edit' %}">
+            {% csrf_token %}
+            <input type="hidden" id="editTransactionId" name="transactionId">
+			<input type="hidden" id="editPortfolioPk" name="portfolioId" value={{portfolio.pk}}>
+           
+			<label for="value">Value:</label>
+            <input type="number" name="value" id="editValue" step="0.01" required><br>
+
+			<label for="description">Description:</label>
+            <input type="text" name="description" id="editDescription" required><br>
+
+			<label for="date">Date:</label>
+            <input type="datetime-local" name="date" id="editDate"><br>
+
+            <label for="percentage">Percentage:</label>
+            <input type="number" name="percentage" id="editPercentage" step="0.01" required><br>
+            
+			<label for="label">Label:</label>
+            <input type="text" name="label" id="editLabel" required><br>
+            
+			<label for="categoryPk">Category:</label>
+            <select name="categoryPk" id="editCategoryPk" required>
+                {% for category in categories %}
+                    <option value="{{ category.pk }}">{{ category.classification }}</option>
+                {% endfor %}
+            </select><br>
+            <input type="submit" value="Save">
+        </form>
+    </div>
+</div>
+
+<script>
+
+	function parseDate(dateString) {
+		const parts = dateString.split(" ");
+		const datePart = parts[0];
+		const timePart = parts[1];
+		const [day, month, year] = datePart.split("/");
+		const [hours, minutes, seconds] = timePart.split(":");
+		return new Date(year, month - 1, day, hours, minutes, seconds);
+	}
+
+	function editTransaction(pk, value, description, date, percentage, label, categoryPk)
+	{
+		const formattedDate = parseDate(date);
+    	const formattedDateString = formattedDate.toISOString().slice(0, 16); 
+
+		document.getElementById("editTransactionId").value = pk;
+		document.getElementById("editValue").value = value;
+		document.getElementById("editDescription").value = description;
+		document.getElementById("editDate").value = formattedDateString;
+		document.getElementById("editPercentage").value = percentage;
+		document.getElementById("editLabel").value = label;
+		document.getElementById("editCategoryPk").value = categoryPk;
+
+		console.log(date);
+		console.log(parseDate(date));
+		console.log(document.getElementById("editDate").value);
+
+		toggleModal('editTransactionModal', true);
+	}
+</script>
+
+{% endblock page_content %}

@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+
+<h1>Assign rules to {{portfolio.name}}</h1>
+
+<div>
+    <table class="styled-table" id="rulesTable">
+        <thead>
+            <tr>
+                <th></th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Label
+                </th>
+                <th>
+                    Percentage
+                </th>
+                <th>
+                    Category
+                </th>
+                <th>
+                    Regular Expression
+                </th>
+                <th>
+                    Start Date
+                </th>
+                <th>
+                    End Date
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rule in rips %}
+                <tr>
+                    <td>
+                        <input type="checkbox" id="rule{{ rule.pk }}" data-rule-id="{{ rule.pk }}" checked>
+                    </td>
+                    <td>
+                        {{rule.name}}
+                    </td>
+                    <td>
+                        {{rule.label}}
+                    </td>
+                    <td>
+                        {{rule.percentage}}
+                    </td>
+                    <td>
+                        {{rule.category.name}}
+                    </td>
+                    <td>
+                        {{rule.regexpr}}
+                    </td>
+                    <td>
+                        {{rule.startDate}}
+                    </td>
+                    <td>
+                        {{rule.endDate}}
+                    </td>
+                </tr>
+            {% endfor %}
+            {% for rule in notRips %}
+                <tr>
+                    <td>
+                        <input type="checkbox" id="rule{{ rule.pk }}" data-rule-id="{{ rule.pk }}">
+                    </td>
+                    <td>
+                        {{rule.name}}
+                    </td>
+                    <td>
+                        {{rule.label}}
+                    </td>
+                    <td>
+                        {{rule.percentage}}
+                    </td>
+                    <td>
+                        {{rule.category.name}}
+                    </td>
+                    <td>
+                        {{rule.regexpr}}
+                    </td>
+                    <td>
+                        {{rule.startDate}}
+                    </td>
+                    <td>
+                        {{rule.endDate}}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<button type="submit" id="saveButton">Salva</button>
+
+<script>
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+    const selectedRules = [];
+
+    // Aggiungi event listener al bottone di salvataggio
+    const saveButton = document.getElementById('saveButton');
+    saveButton.addEventListener('click', async (event) => {
+        event.preventDefault();
+
+        checkboxes.forEach((checkbox) => {
+            const ruleId = checkbox.getAttribute('data-rule-id');
+            if (checkbox.checked)
+            {
+                selectedRules.push(ruleId);
+            }
+        });
+
+        // Invia una richiesta AJAX al tuo server per salvare le associazioni
+        try {
+            const response = await fetch('/rules/assign', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}', // Inserisci il token CSRF
+                },
+                body: JSON.stringify({
+                    'portfolioPk': {{portfolio.pk}},
+                    'assignedRules': selectedRules
+                }),
+            });
+
+            if (response.ok) {
+                // Gestisci la risposta positiva (ad esempio, mostra un messaggio di successo)
+            } else {
+                // Gestisci eventuali errori
+            }
+        } catch (error) {
+            console.error('Errore durante la richiesta AJAX:', error);
+        }
+    });
+</script>
+
+{% endblock page_content %}

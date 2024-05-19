@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+
+<h1>Rules</h1>
+
+<!-- Button to open the modal -->
+<button onclick="toggleModal('newRuleModal', true)">Aggiungi</button>
+
+<div>
+    <table class="styled-table" id="rulesTable">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Label
+                </th>
+                <th>
+                    Percentage
+                </th>
+                <th>
+                    Category
+                </th>
+                <th>
+                    Regular Expression
+                </th>
+                <th>
+                    Start Date
+                </th>
+                <th>
+                    End Date
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rule in rules %}
+                <tr>
+                    <td>
+                        {{rule.name}}
+                    </td>
+                    <td>
+                        {{rule.label}}
+                    </td>
+                    <td>
+                        {{rule.percentage}}
+                    </td>
+                    <td>
+                        {{rule.category.classification}}
+                    </td>
+                    <td>
+                        {{rule.regexpr}}
+                    </td>
+                    <td>
+                        {{rule.startDate}}
+                    </td>
+                    <td>
+                        {{rule.endDate}}
+                    </td>
+                    <td>
+                        <button onclick="editRule({{rule.pk}}, '{{rule.name}}', '{{rule.label}}', {{rule.percentage}}, {{rule.category.pk}})">Edit</button>
+                        <form action="{% url 'delete_rule' pk=rule.pk %}" method="post" id="delete-form">
+                            {% csrf_token %}
+                            <button type="submit" onclick="return confirm('Sei sicuro di voler eliminare questo elemento?')">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- The Modal -->
+<div id="editRuleModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">×</span>
+        <form method="post" action="{% url 'edit_rule' %}">
+            {% csrf_token %}
+            <input type="hidden" id="editRuleId" name="editRuleId">
+            <label for="name">Name:</label>
+            <input type="text" name="editName" id="editName" required><br>
+            <label for="label">Label:</label>
+            <input type="text" name="editLabel" id="editLabel" required><br>
+            <label for="percentage">Percentage:</label>
+            <input type="number" name="editPercentage" id="editPercentage" step="0.01" required><br>
+            <label for="categoryPk">Category:</label>
+            <select name="editCategoryPk" id="editCategoryPk" required>
+                {% for category in categories %}
+                    <option value="{{ category.pk }}">{{ category.classification }}</option>
+                {% endfor %}
+            </select><br>
+            <label for="type">Type:</label>
+            <select name="editRuleType" onchange="showEditFields()">
+                <option value="regexpr">Regular Expression</option>
+                <option value="interval">Interval</option>
+            </select><br>
+            <!-- Additional fields based on type selection -->
+            <div id="editRuleRegexprFields">
+                <label for="regexpr">Regexpr:</label>
+                <input type="text" name="regexpr"><br>
+            </div>
+            <div id="editRulentervalFields" style="display: none;">
+                <label for="startDate">Start Date:</label>
+                <input type="datetime-local" name="startDate"><br>
+                <label for="endDate">End Date:</label>
+                <input type="datetime-local" name="endDate"><br>
+            </div>
+            <input type="submit" value="Save">
+        </form>
+    </div>
+</div>
+
+
+<div id="newRuleModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">×</span>
+        <form method="post" action="{% url 'new_rule' %}">
+            {% csrf_token %}
+            <label for="name">Name:</label>
+            <input type="text" name="name" required><br>
+            <label for="label">Label:</label>
+            <input type="text" name="label" required><br>
+            <label for="percentage">Percentage:</label>
+            <input type="number" name="percentage" step="0.01" required><br>
+            <label for="categoryPk">Category:</label>
+            <select name="categoryPk" id="categoryPk" required>
+                {% for category in categories %}
+                    <option value="{{ category.pk }}">{{ category.classification }}</option>
+                {% endfor %}
+            </select><br>
+            <label for="type">Type:</label>
+            <select name="newRuleType" onchange="showNewFields()">
+                <option value="regexpr">Regular Expression</option>
+                <option value="interval">Interval</option>
+            </select><br>
+            <!-- Additional fields based on type selection -->
+            <div id="newRuleRegexprFields">
+                <label for="regexpr">Regexpr:</label>
+                <input type="text" name="regexpr"><br>
+            </div>
+            <div id="newRulentervalFields" style="display: none;">
+                <label for="startDate">Start Date:</label>
+                <input type="datetime-local" name="startDate"><br>
+                <label for="endDate">End Date:</label>
+                <input type="datetime-local" name="endDate"><br>
+            </div>
+            <input type="submit" value="Save">
+        </form>
+    </div>
+</div>
+
+<script>
+    function showNewFields() {
+        const newTypeSelect = document.querySelector('select[name="newRuleType"]');
+        const newRegexprFields = document.getElementById('newRuleRegexprFields');
+        const newIntervalFields = document.getElementById('newRulentervalFields');
+
+        newRegexprFields.style.display = 'none';
+        newIntervalFields.style.display = 'none';
+
+        if (newTypeSelect.value === 'regexpr') {
+            newRegexprFields.style.display = 'block';
+        } else if (newTypeSelect.value === 'interval') {
+            newIntervalFields.style.display = 'block';
+        }
+    }
+
+    function showEditFields() {
+        const editTypeSelect = document.querySelector('select[name="editRuleType"]');
+        const editRegexprFields = document.getElementById('editRuleRegexprFields');
+        const editIntervalFields = document.getElementById('editRulentervalFields');
+
+        editRegexprFields.style.display = 'none';
+        editIntervalFields.style.display = 'none';
+
+        if (editTypeSelect.value === 'regexpr') {
+            editRegexprFields.style.display = 'block';
+        } else if (editTypeSelect.value === 'interval') {
+            editIntervalFields.style.display = 'block';
+        }
+    }
+
+    function editRule(pk, name, label, percentage, categoryPk) {
+        document.getElementById("editRuleId").value = pk;
+        document.getElementById("editName").value = name;
+        document.getElementById("editLabel").value = label;
+        document.getElementById("editPercentage").value = percentage;
+        document.getElementById("editCategoryPk").value = categoryPk;
+
+        toggleModal('editRuleModal', true);
+    }
+</script>
+
+{% endblock page_content %}

@@ -15,7 +15,8 @@ class DataRetriever:
 
             # Price
             price = self.downloader.price(ticker)
-            self.redis.set(ticker, price)
+            if price is not None:
+                self.redis.set(ticker, price)
 
     def download(self, ticker):
         price = self.downloader.price(ticker)

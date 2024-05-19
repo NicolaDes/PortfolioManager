@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+
+<h1>Categories</h1>
+
+<!-- Button to open the modal -->
+<button onclick="toggleModal('newCategoryModal', true)">Aggiungi</button>
+
+<div>
+    <table class="styled-table" id="categoriesTable">
+        <thead>
+            <tr>
+                <th>
+                    Archetype [Income/Outcome]
+                </th>
+                <th>
+                    Classification [Salary, Foods, Grocery, ...]
+                </th>
+                <th>
+                    Group [Entertainmetn]
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in categories %}
+                <tr>
+                    <td>
+                        {{category.archetype}}
+                    </td>
+                    <td>
+                        {{category.classification}}
+                    </td>
+                    <td>
+                        {{category.group}}
+                    </td>
+                    <td>
+                        <button onclick="editCategory({{category.pk}}, '{{category.archetype}}', '{{category.classification}}', '{{category.group}}')">Edit</button>
+                        <form action="{% url 'delete_category' pk=category.pk %}" method="post" id="delete-form">
+                            {% csrf_token %}
+                            <button type="submit" onclick="return confirm('Sei sicuro di voler eliminare questo elemento?')">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- The Modal -->
+<div id="editRuleModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">×</span>
+        <form method="post" action="{% url 'edit_category' %}">
+            {% csrf_token %}
+            <input type="hidden" id="editCategoryId" name="categoryId">
+            <label for="archetype">Archetype:</label>
+            <input type="text" id="editArchetype" name="archetype" required><br>
+            <label for="classification">Classification:</label>
+            <input type="text" id="editClassification" name="classification" required><br>
+            <label for="group">Group:</label>
+            <input type="text" id="editGroup" name="group" required><br>
+            <input type="submit" value="Save">
+        </form>
+    </div>
+</div>
+
+
+<div id="newCategoryModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">×</span>
+        <form method="post" action="{% url 'new_category' %}">
+            {% csrf_token %}
+            <label for="archetype">Archetype:</label>
+            <input type="text" name="archetype" required><br>
+            <label for="classification">Classification:</label>
+            <input type="text" name="classification" required><br>
+            <label for="group">Group:</label>
+            <input type="text" name="group" required><br>
+            <input type="submit" value="Save">
+        </form>
+    </div>
+</div>
+
+<script>
+    function editCategory(pk, archetype, classification, group) {
+        document.getElementById("editCategoryId").value = pk;
+        document.getElementById("editArchetype").value = archetype;
+        document.getElementById("editClassification").value = classification;
+        document.getElementById("editGroup").value = group;
+
+        toggleModal('editRuleModal', true);
+    }
+</script>
+
+{% endblock page_content %}

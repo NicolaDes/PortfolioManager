@@ -1,0 +1,46 @@
+<!-- templates/base.html -->
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Portfolio{% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'lib/bootstrap/dist/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'lib/jquery-datatables/dist/css/jquery.dataTables.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/site.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/modals.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}" />
+    <!-- <link rel="stylesheet" href="{% static 'PortfolioTracker.styles.css' %}" /> -->
+
+    <script src="{% static 'lib/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'lib/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'lib/jquery-datatables/dist/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'lib/jquery-datatables/dist/js/dataTables.fixedHeader.js' %}"></script>
+    <script src="{% static 'js/site.js' %}"></script>
+    <script src="{% static 'js/modals.js' %}"></script>
+    
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+</head>
+
+
+
+<body>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+
+    {% block page_content %}
+    
+    {% endblock page_content %}
+</body>
+</html>
