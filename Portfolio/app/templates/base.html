@@ -5,6 +5,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}My Personal Portfolio{% endblock title %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
@@ -24,10 +25,60 @@
     </ul>
     {% endif %}
 
+    <div id="burgerSideBar" class="sidebar">
+        <div id="icon_links">
+            <button class="openbtn" onclick="handleNav()">☰</button>
+            <a href="/"><img src="{% static 'images/home.svg' %}" style="width:21px;height:21px;"></a>
+            {% block icon_menu_links %}
 
-    {% block page_content %}{% endblock page_content %}
+            {% endblock icon_menu_links %}
+        </div>
+
+        <div id="text_links">
+            <button class="openbtn" onclick="handleNav()">x</button>
+            <a href="/">Home</a>
+            {% block menu_links %}
+
+            {% endblock menu_links %}
+        </div>
+      </div>
+      
+      <div id="main">
+        {% block page_content %}
+        
+        {% endblock page_content %}
+      </div>
 
     <script>
+        function openNav() {
+            document.getElementById("burgerSideBar").style.width = "250px";
+            document.getElementById("main").style.marginLeft = "250px";
+            document.getElementById("icon_links").style.display = "none";
+            document.getElementById("text_links").style.display = "block";
+        }
+
+        function closeNav() {
+            document.getElementById("burgerSideBar").style.width = "50px";
+            document.getElementById("main").style.marginLeft= "50px";
+            document.getElementById("icon_links").style.display = "block";
+            document.getElementById("text_links").style.display = "none";
+        }
+
+        function handleNav()
+        {
+            if (document.getElementById("burgerSideBar").style.width == "50px") {
+                openNav();
+            }
+            else {
+                closeNav();
+            }
+        }
+
+        window.onload = (event) => {
+            closeNav();
+        };
+
+
          // Funzione di utilità per mostrare o nascondere i modali
         function toggleModal(modalId, show) {
             var modal = document.getElementById(modalId);

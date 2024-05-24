@@ -209,3 +209,24 @@ def analytics(request, pk, year):
     }
 
     return render(request, "portfolio_analytics.html", context)
+
+def report(request, pk, year, month):
+    portfolio = Portfolio.objects.get(pk=pk)
+    transactions = []
+
+    for t in portfolio.transaction_set.filter(date__year=year, date__month=month, category__archetype='Outcome').exclude(percToExclude=0):
+        transactions.append({
+            "id": int(t.pk),
+            "description": str(t.description),
+            "value": float(t.value),
+            "percToExclude": float(t.percToExclude)
+        })
+
+    print(transactions)
+
+    context = {
+        "portfolio": portfolio,
+        "transactions": transactions
+    }
+
+    return render(request, "portfolio_report.html", context)
