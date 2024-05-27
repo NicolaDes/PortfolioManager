@@ -6,6 +6,8 @@ class JupiterDownloader:
 
     def price(self, ticker) -> float:
         upperTicker = ticker.upper()
+        if upperTicker == "SOLC":
+            upperTicker = "DLUNTKRQt7CrpqSX1naHUYoBznJ9pvMP65uCeWQgYnRK"
         url = "https://price.jup.ag/v4/price?ids="+upperTicker
         headers = {"accept": "application/json"}
         j = requests.get(url=url, headers=headers).json()

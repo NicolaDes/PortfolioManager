@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% load math %}
+
+{% block page_content %}
+
+<h1>{{portfolio.name}}</h1>
+
+<div class="topnav">
+	<a href="{% url 'portfolio_detail' portfolio.pk %}">Details</a>
+	<a href="{% url 'portfolio_rules' portfolio.pk %}">Assigned Rules</a>
+	<a href="{% url 'rule_index' %}">Rules</a>
+	<a href="{% url 'category_index' %}">Categories</a>
+	<a href="{% url 'portfolio_analytics' pk=portfolio.pk year=2024 %}">Analytics</a>
+</div>
+
+<div>
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Descrption</th>
+                <th>Value</th>
+                <th>Perc To Exclude</th>
+                <th>Weight Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in transactions %}
+                <tr>
+                    <td><input type="checkbox" name="seleziona" checked="true"></td>
+                    <td>{{ t.description }}</td>
+                    <td id="value-{{t.id}}">{{ t.value }}</td>
+                    <td><input id="perc-{{t.id}}" type="number" step="0.01" value="{{ t.percToExclude }}" onchange="updateValue({{t.id}})"></td>
+                    <td id="weightValue-{{t.id}}">{{ t.value|mul:t.percToExclude }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button onclick="copyCsv()">Copy CSV</button>
+</div>
+
+<script>
+    function copyCsv() {
+        const righeSpuntate = document.querySelectorAll('input[type="checkbox"]:checked');
+        const csvContent = Array.from(righeSpuntate).map(row => {
+            const descrizione = row.closest('tr').querySelector('td:nth-child(2)').textContent;
+            const valoreSpeso = row.closest('tr').querySelector('td:nth-child(3)').textContent;
+            const valorePesato = row.closest('tr').querySelector('td:nth-child(5)').textContent;
+            return `${descrizione},${valoreSpeso},${valorePesato}`;
+        }).join('\n');
+
+        const csv = "Descrizione,SpesoNetto,DaPagare\n"+csvContent
+
+        // Copia il CSV nella clipboard (puoi personalizzare questa parte)
+        navigator.clipboard.writeText(csv).then(() => {
+            alert('CSV copiato nella clipboard!');
+        }).catch(err => {
+            console.error('Errore durante la copia del CSV:', err);
+        });
+    }
+
+    function updateValue(id) {
+        const valore = parseFloat(document.getElementById(`value-${id}`).textContent);
+        const percentuale = parseFloat(document.getElementById(`perc-${id}`).value);
+        const valorePesato = valore * percentuale;
+        console.log(valore)
+        console.log(percentuale)
+        console.log(valorePesato)
+        document.getElementById(`weightValue-${id}`).textContent = valorePesato.toFixed(2);
+    }
+</script>
+
+{% endblock page_content %}
