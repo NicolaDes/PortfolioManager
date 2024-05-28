@@ -37,3 +37,7 @@ class RuleInPortfolio(models.Model):
     rule = models.ForeignKey(Rule, on_delete=models.CASCADE)
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
 
+class Budget(models.Model):
+    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
+    group = models.CharField(max_length=100)
+    perc = models.DecimalField(max_digits=10, decimal_places=3)

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+
+<h1>Assign budgets to {{portfolio.name}}</h1>
+
+<button onclick="toggleModal('newBudgetModal', true)">Aggiungi</button>
+
+<div>
+    <table class="styled-table" id="rulesTable">
+        <thead>
+            <tr>
+                <th>
+                    Group
+                </th>
+                <th>
+                    Percentage
+                </th>
+                <th>
+                    
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+           {% for b in budgets %}
+            <tr>
+                <td>
+                    {{b.group}}
+                </td>
+                <td>
+                    {{b.perc}}
+                </td>
+                <td>
+                    <form action="{% url 'delete_budget' pk=b.pk %}" method="post" id="delete-form">
+                        {% csrf_token %}
+                        <button type="submit" onclick="return confirm('Sei sicuro di voler eliminare questo elemento?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+           {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div id="newBudgetModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">×</span>
+        <form method="post" action="{% url 'new_budget' pk=portfolio.pk %}">
+            {% csrf_token %}
+            <label for="categoryGroup">Category:</label>
+            <select name="categoryGroup" id="categoryGroup" required>
+                {% for g in groups %}
+                    <option value="{{ g.group }}">{{ g.group }}</option>
+                {% endfor %}
+            </select><br>
+            <label for="perc">Percentage:</label>
+            <input type="number" name="perc" id="perc" step="0.01" required><br>
+            <input type="submit" value="Save">
+        </form>
+    </div>
+</div>
+
+{% endblock page_content %}

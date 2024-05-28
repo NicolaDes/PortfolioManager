@@ -3,3 +3,4 @@ docker exec -it expenses python manage.py dumpdata expenses.Category --indent 2 
 docker exec -it expenses python manage.py dumpdata expenses.Transaction --indent 2 > backups/expenses/transactions.json
 docker exec -it expenses python manage.py dumpdata expenses.Rule --indent 2 > backups/expenses/rules.json
 docker exec -it expenses python manage.py dumpdata expenses.RuleInPortfolio --indent 2 > backups/expenses/rips.json
+docker exec -it expenses python manage.py dumpdata expenses.Budget --indent 2 > backups/expenses/budgets.json

@@ -7,6 +7,7 @@
 <div class="topnav">
 	<a href="{% url 'portfolio_detail' portfolio.pk %}">Details</a>
 	<a href="{% url 'portfolio_rules' portfolio.pk %}">Assigned Rules</a>
+	<a href="{% url 'portfolio_budgets' portfolio.pk %}">Assigned Budgets</a>
 	<a href="{% url 'rule_index' %}">Rules</a>
 	<a href="{% url 'category_index' %}">Categories</a>
 	<a href="{% url 'portfolio_analytics' pk=portfolio.pk year=2024 %}">Analytics</a>
@@ -118,8 +119,21 @@
 			</div>
 		</div>
 		<div class="card">
-			<h3>Budgets over 1 year</h3>
-			
+			<h1>Budgets ({{income}})</h1>
+			{% for b in budgets %}
+				<div>
+					<div style="position: relative;">
+						<h3>{{b.group}}</h3>
+						{{b.spent}} / {{b.available}} €
+					</div>
+					<div style="position: relative;">
+						<progress value="{{ b.percentageUsed }}" max="100" style="width: 100%; height: 40px; accent-color: {% if b.percentageUsed > 100 %}red{% elif b.percentageUsed >= 80 %}yellow{% else %}green{% endif %};"></progress>
+						<span style="position: absolute; top: 20%; left: 50%; transform: translateX(-50%); font-size: 14px; color: {% if b.percentageUsed > 49 %}white{% else %}black{% endif %};">
+							{{ b.percentageUsed }}%
+						</span>
+					</div>
+				</div>
+			{% endfor %}
 		</div>
 
 	</div>
