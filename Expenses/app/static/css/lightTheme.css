@@ -1,0 +1,36 @@
+:root {
+    --theme-one: rgb(61, 82, 161);
+    --theme-two: rgb(113, 145, 230);
+    --theme-three: rgb(134, 151, 195);
+    --theme-four: rgb(173, 186, 218);
+    --theme-five: rgb(238, 232, 246);
+    
+    --theme-background: var(--theme-five);
+    --theme-text: black;
+    --theme-topnav: rgb(173, 186, 218, 0.5);
+    --theme-title: black;
+    --theme-topnav-elements: var(--theme-text);
+    --theme-topnav-elements-hover: var(--theme-one);
+    --theme-topnav-elements-bg: var(--theme-topnav);
+    --theme-topnav-elements-bg-hover: var(--theme-background);
+    --theme-footer-bg: var(--theme-three);
+
+    --theme-button: var(--theme-text);
+    --theme-button-background: var(--theme-four);
+    --theme-button-hover: var(--theme-background);
+    --theme-button-background-hover: var(--theme-one);
+
+    --theme-links: var(--theme-one);
+    --theme-input: var(--theme-three);
+    --theme-input-submit-background: var(--theme-two);
+    --theme-input-submit: var(--theme-three);
+    --theme-border: var(--theme-two);
+
+    --theme-div-background: rgb(134, 151, 195, 0.5);
+    --theme-card: rgb(134, 151, 195, 0.5);
+    
+    --theme-table-shadow: var(--theme-two);
+    --theme-table-t: var(--theme-text);
+    --theme-table-t-background: var(--theme-background);
+    --theme-table-border: var(--theme-two);
+}
