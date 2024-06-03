@@ -9,5 +9,6 @@ docker exec -it expenses python manage.py loaddata /app/genesis/categories.json
 docker exec -it expenses python manage.py loaddata /app/genesis/transactions.json
 docker exec -it expenses python manage.py loaddata /app/genesis/rules.json
 docker exec -it expenses python manage.py loaddata /app/genesis/rips.json
+docker exec -it expenses python manage.py loaddata /app/genesis/budgets.json
 
 docker exec -it expenses /bin/bash -c "rm -rf /app/genesis"

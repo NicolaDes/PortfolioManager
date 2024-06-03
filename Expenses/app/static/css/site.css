@@ -1,91 +1,86 @@
 html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
-  margin-left: 0px;
+    font-family: Arial;
+    padding: 11px;
+    background: var(--theme-background);
+    margin-bottom: 60px;
+    margin-left: 0px;
 }
 
 * {
     box-sizing: border-box;
 }
 
-body {
-    font-family: Arial;
-    padding: 11px;
-    background: #f1f1f1;
-}
-
 /* Header/Blog Title */
 .header {
     padding: 30px;
     text-align: center;
-    background: white;
+    background: var(--theme-background);
 }
 
-    .header h1 {
-        font-size: 50px;
-    }
+.header h1 {
+    font-size: 50px;
+    color: var(--theme-title);
+}
+
+h2, h3, h4, h5, p {
+    color: var(--theme-text);
+}
+
+/* Stile generale per tutte le div */
+div {
+    background-color: var(--theme-div-background);
+    margin: 5px;
+    border-radius: 10px;
+    /* box-shadow: 0 0 20px var(--theme-table-shadow); */
+}
 
 /* Style the top navigation bar */
 .topnav {
     overflow: hidden;
-    background-color: #0ABAB5;
+    background-color: var(--theme-topnav);
 }
 
-    /* Style the topnav links */
-    .topnav a {
-        float: left;
-        display: block;
-        color: #f2f2f2;
-        text-align: center;
-        padding: 14px 16px;
-        text-decoration: none;
-    }
+/* Style the topnav links */
+.topnav a {
+    float: left;
+    display: block;
+    color: var(--theme-topnav-elements);
+    background-color: var(--theme-topnav-elements-bg);
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
 
-        /* Change color on hover */
-        .topnav a:hover {
-            background-color: #ddd;
-            color: black;
-        }
+/* Change color on hover */
+.topnav a:hover {
+    color: var(--theme-topnav-elements-hover);
+    background-color: var(--theme-topnav-elements-bg-hover);
+}
 
 /* Create two unequal columns that floats next to each other */
 /* Left column */
 .leftcolumn {
     float: left;
-    width: 75%;
+    width: 74%;
 }
 
 /* Right column */
 .rightcolumn {
     float: left;
     width: 25%;
-    background-color: #f1f1f1;
+    background-color: var(--theme-background);
     padding-left: 20px;
-}
-
-/* Fake image */
-.fakeimg {
-    background-color: #aaa;
-    width: 100%;
-    padding: 20px;
 }
 
 /* Add a card effect for articles */
 .card {
-    background-color: white;
+    background-color: var(--theme-card);
     padding: 20px;
     margin-top: 20px;
 }
@@ -101,10 +96,84 @@ body {
 .footer {
     padding: 10px;
     text-align: center;
-    background: #ddd;
+    background: var(--theme-footer-bg);
     margin-top: 10px;
 }
 
+table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    /* box-shadow: 0 0 20px var(--theme-table-shadow); */
+}
+
+thead tr {
+    background-color: var(--theme-table-t-background);
+    color: var(--theme-table-t);
+    text-align: left;
+}
+
+th, td {
+    background-color: var(--theme-table-t-background);
+    color: var(--theme-table-t);
+    padding: 12px 15px;
+}
+
+tbody tr {
+    border-bottom: 1px solid var(--theme-table-border);
+}
+
+/* Links */
+a {
+    color: var(--theme-links);
+    text-decoration: none;
+}
+
+
+/* Inputs */
+input {
+    border: 1px solid var(--theme-border);
+    padding: 5px;
+    border-radius: 5px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="submit"] {
+    border-radius: 5px;
+    background-color: var(--theme-input-submit-background);
+    color: var(--theme-input-submit);
+}
+
+input[type="submit"] {
+    margin-right: 10px;
+    background-color: var(--theme-input-submit-background);
+    color: var(--theme-input-submit);
+}
+
+button {
+    background-color: var(--theme-background);
+    color: var(--theme-primary);
+    border:  none;
+    font-weight: bold;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: var(--theme-primary);
+    color: var(--theme-background);
+    border:  none;
+    font-weight: bold;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Responsive layouts */
 /* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
 @media screen and (max-width: 800px) {
     .leftcolumn, .rightcolumn {
@@ -121,47 +190,9 @@ body {
     }
 }
 
-.styled-table {
-    border-collapse: collapse;
-    margin: 25px 0;
-    font-size: 0.9em;
-    font-family: sans-serif;
-    min-width: 400px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-}
-
-.styled-table thead tr {
-    background-color: #009879;
-    color: #ffffff;
-    text-align: left;
-}
-
-.styled-table th,
-.styled-table td {
-    padding: 12px 15px;
-}
-
-.styled-table tbody tr {
-    border-bottom: 1px solid #dddddd;
-}
-
-.styled-table tbody tr:nth-of-type(even) {
-    background-color: #f3f3f3;
-}
-
-.styled-table tbody tr:last-of-type {
-    border-bottom: 2px solid #009879;
-}
-
-.styled-table tbody tr.active-row {
-    font-weight: bold;
-    color: #009879;
-}
-
-[type=search] {
-    background-image: url("{% static 'images/searchicon.png' %}");
-    background-position: 10px 10px;
-    background-repeat: no-repeat;
-    padding: 5px 20px 5px 40px !important;
-    margin-bottom: 8px !important;
-}
+@media (min-width: 768px) {
+    html {
+      font-size: 16px;
+    }
+  }
+  

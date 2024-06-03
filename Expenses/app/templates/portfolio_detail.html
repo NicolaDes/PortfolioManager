@@ -7,6 +7,7 @@
 <div class="topnav">
 	<a href="{% url 'portfolio_detail' portfolio.pk %}">Details</a>
 	<a href="{% url 'portfolio_rules' portfolio.pk %}">Assigned Rules</a>
+	<a href="{% url 'portfolio_budgets' portfolio.pk %}">Assigned Budgets</a>
 	<a href="{% url 'rule_index' %}">Rules</a>
 	<a href="{% url 'category_index' %}">Categories</a>
 	<a href="{% url 'portfolio_analytics' pk=portfolio.pk year=2024 %}">Analytics</a>
@@ -62,7 +63,7 @@
 								{{t.description}}
 							</td>
 							<td>
-								{{t.date}}
+								{{t.date|date:"Y-m-d H:i" }}
 							</td>
 							<td>
 								{{t.percToExclude}}
@@ -102,7 +103,35 @@
 	<div class="rightcolumn">
 		<div class="card">
 			<h3>Reporting for Benni</h3>
-			
+			<div>
+				<select id="monthSelector">
+					<option value="1">January</option>
+					<option value="2">February</option>
+					<option value="3">March</option>
+					<option value="4">April</option>
+					<option value="5">May</option>
+					<option value="6">June</option>
+					<option value="7">July</option>
+					<option value="8">August</option>
+					<option value="9">September</option>
+					<option value="10">October</option>
+					<option value="11">November</option>
+					<option value="12">December</option>
+					<!-- Aggiungi altre opzioni per gli altri mesi -->
+				</select>
+				<select id="yearSelector">
+					<option value="2023">2023</option>
+					<option value="2024" selected>2024</option>
+					<option value="2025">2025</option>
+					<option value="2026">2026</option>
+					<option value="2027">2027</option>
+					<option value="2028">2028</option>
+					<option value="2029">2029</option>
+					<option value="2030">2030</option>
+					<!-- Aggiungi altre opzioni per gli altri anni -->
+				</select>
+				<button onclick="redirectToReport()">Report</button>
+			</div>
 		</div>
 		<div class="card">
 			<h3>Statistics</h3>
@@ -209,6 +238,13 @@
 </div>
 
 <script>
+
+	function redirectToReport() {
+        const selectedMonth = document.getElementById("monthSelector").value;
+        const selectedYear = document.getElementById("yearSelector").value;
+        const url = `/{{portfolio.pk}}/report/${selectedYear}/${selectedMonth}`;
+        window.location.href = url;
+    }
 
 	function parseDate(dateString) {
 		const parts = dateString.split(" ");

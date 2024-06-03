@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from django.db.models import Sum, F, Case, When, Value
 from django.db.models.functions import TruncMonth
 
-from expenses.models import Portfolio, Transaction, Rule, RuleInPortfolio, Category
+from expenses.models import Portfolio, Transaction, Rule, RuleInPortfolio, Category, Budget
 
 from .rules import applyRules
 from ..forms import ExcelUploadForm
@@ -72,6 +72,31 @@ def portfolio_rules(request, pk):
 
     return render(request, "portfolio_rules.html", context)
 
+def portfolio_budgets(request, pk):
+    portfolio = Portfolio.objects.get(pk=pk)
+    groups = Category.objects.all().values("group").distinct()
+    budgets = set(portfolio.budget_set.all())
+
+    context = {
+        "portfolio": portfolio,
+        "budgets": budgets,
+        "groups": groups
+    }
+
+    return render(request, "portfolio_budgets.html", context)
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def new_budget(request, pk):
+    portfolio = Portfolio.objects.get(pk=pk)
+    group = request.POST.get('categoryGroup')
+    perc = request.POST.get('perc')
+
+    budget = Budget(portfolio=portfolio, group=group, perc=perc)
+    budget.save()
+
+    return redirect("portfolio_budgets", pk)
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def portfolio_assign_rules(request):
@@ -95,10 +120,6 @@ def portfolio_assign_rules(request):
     
     return JsonResponse({'message': f'Regole assegnate: {assignedRules}'})
 
-def expensesByCategory(transactions):
-    txts = transactions.annotate(total_value=Case(When(category__archetype='Expense', then=F('value') - F('percToExclude') * F('value')),default=F('value'))).values('category__classification').annotate(total_sum=Sum('total_value'))
-    return [{"name": str(item['category__classification']), "y": abs(float(item['total_sum']))} for item in txts]
-
 def analytics(request, pk, year):
     portfolio = Portfolio.objects.get(pk=pk)
 
@@ -107,7 +128,7 @@ def analytics(request, pk, year):
         {
             "name": str(item['category__classification']), 
             "y": abs(float(item['total_sum']))} 
-            for item in Transaction.objects.filter(portfolio=portfolio, date__year=year, category__archetype='Outcome')
+            for item in Transaction.objects.filter(portfolio=portfolio, date__year=year, category__archetype='Outcome').exclude(category__group='Investments').exclude(category__group='Savings')
                 .annotate(total_value=Case(When(category__archetype='Outcome', then=F('value') - F('percToExclude') * F('value')),default=F('value')))
                 .values('category__classification')
                 .annotate(total_sum=Sum('total_value'))
@@ -119,7 +140,7 @@ def analytics(request, pk, year):
         {
             "name": str(item['label']), 
             "y": abs(float(item['total_sum']))} 
-            for item in Transaction.objects.filter(portfolio=portfolio, date__year=year, category__archetype='Outcome')
+            for item in Transaction.objects.filter(portfolio=portfolio, date__year=year, category__archetype='Outcome').exclude(category__group='Investments').exclude(category__group='Savings')
                 .annotate(total_value=Case(When(category__archetype='Outcome', then=F('value') - F('percToExclude') * F('value')),default=F('value')))
                 .values('label')
                 .annotate(total_sum=Sum('total_value'))
@@ -132,7 +153,7 @@ def analytics(request, pk, year):
 
         montlyData = []
         for month in range(1, 13):
-            res = Transaction.objects.filter(portfolio=portfolio, category=c, date__year=year, date__month=month).annotate(total_value=Case(When(category__archetype='Outcome', then=F('value') - F('percToExclude') * F('value')),default=F('value'))).values('category__classification').annotate(total_sum=Sum('total_value'))
+            res = Transaction.objects.filter(portfolio=portfolio, category=c, date__year=year, date__month=month).exclude(category__group='Investments').exclude(category__group='Savings').annotate(total_value=Case(When(category__archetype='Outcome', then=F('value') - F('percToExclude') * F('value')),default=F('value'))).values('category__classification').annotate(total_sum=Sum('total_value'))
             sumValue = 0
             if res:
                 sumValue = float(res[0]['total_sum'])
@@ -151,7 +172,7 @@ def analytics(request, pk, year):
         l = el['label']
         montlyData = []
         for month in range(1, 13):
-            res = Transaction.objects.filter(portfolio=portfolio, label=l, date__year=year, date__month=month, category__archetype='Outcome').annotate(total_value=Case(When(category__archetype='Outcome', then=F('value') - F('percToExclude') * F('value')),default=F('value'))).values('label').annotate(total_sum=Sum('total_value'))
+            res = Transaction.objects.filter(portfolio=portfolio, label=l, date__year=year, date__month=month, category__archetype='Outcome').exclude(category__group='Investments').exclude(category__group='Savings').annotate(total_value=Case(When(category__archetype='Outcome', then=F('value') - F('percToExclude') * F('value')),default=F('value'))).values('label').annotate(total_sum=Sum('total_value'))
             sumValue = 0
             if res:
                 sumValue = float(res[0]['total_sum'])
@@ -170,7 +191,7 @@ def analytics(request, pk, year):
 
         montlyData = []
         for month in range(1, 13):
-            res = Transaction.objects.filter(portfolio=portfolio, category=c, date__year=year, date__month=month).annotate(total_value=F('value') - F('percToExclude') * F('value')).values('category__classification').annotate(total_sum=Sum('total_value'))
+            res = Transaction.objects.filter(portfolio=portfolio, category=c, date__year=year, date__month=month).exclude(category__group='Investments').exclude(category__group='Savings').annotate(total_value=F('value') - F('percToExclude') * F('value')).values('category__classification').annotate(total_sum=Sum('total_value'))
             sumValue = 0
             if res:
                 sumValue = float(res[0]['total_sum'])
@@ -185,7 +206,7 @@ def analytics(request, pk, year):
     cashFlow = []
     cumulativeCashFlow = []
     for month in range(1, 13):
-        sumValue = Transaction.objects.filter(portfolio=portfolio, date__year=year, date__month=month).exclude(category__group='Excluded').exclude(category__group='Investments').annotate(total_value=F('value') - F('percToExclude') * F('value')).aggregate(total_sum=Sum('total_value'))['total_sum']
+        sumValue = Transaction.objects.filter(portfolio=portfolio, date__year=year, date__month=month).exclude(category__group='Excluded').exclude(category__group='Investments').exclude(category__group='Savings').annotate(total_value=F('value') - F('percToExclude') * F('value')).aggregate(total_sum=Sum('total_value'))['total_sum']
 
         if sumValue is not None:
             cashFlow.append(float(sumValue))
@@ -197,6 +218,18 @@ def analytics(request, pk, year):
         else:
             cumulativeCashFlow.append(cashFlow[-1])
 
+    # Budget section
+    income = float(Transaction.objects.filter(portfolio=portfolio, date__year=year).exclude(category__archetype='Outcome').exclude(category__group='Excluded').annotate(total_value=F('value') - F('percToExclude') * F('value')).aggregate(total_sum=Sum('total_value'))['total_sum'])
+    budgets = []
+
+    for b in Budget.objects.filter(portfolio=portfolio):
+        spent = abs(float(Transaction.objects.filter(portfolio=portfolio, category__group=b.group, date__year=year).annotate(total_value=F('value') - F('percToExclude') * F('value')).aggregate(total_sum=Sum('total_value'))['total_sum']))
+        available = income * float(b.perc)
+        percentageUsed = spent / available
+        
+        budgets.append({"group": b.group, "spent": spent, "available": available, "percentageUsed": int(percentageUsed*100.0)})
+
+
     context = {
         "portfolio": portfolio,
         "expensesByCategory": expensesByCategory,
@@ -205,7 +238,9 @@ def analytics(request, pk, year):
         "montlyExpensesByLabel": expensesMonthlyByLabel,
         "allByCategory": totalMontlyByCategory,
         "cashFlowByMonth": cashFlow,
-        "cumulativeCashFlowByMonth": cumulativeCashFlow
+        "cumulativeCashFlowByMonth": cumulativeCashFlow,
+        "budgets": budgets,
+        "income": income
     }
 
     return render(request, "portfolio_analytics.html", context)

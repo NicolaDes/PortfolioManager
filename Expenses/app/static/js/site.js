@@ -122,7 +122,6 @@ function lineChart(series, yAxis, container, title, yAxisLabel) {
 
 }
 
-
 // Remove the formatting to get integer data for summation
 function intVal(i) {
     ret = typeof i === 'string' ? i.replace(/[\$€,]/g, '') * 1 : typeof i === 'number' ? i : 0;

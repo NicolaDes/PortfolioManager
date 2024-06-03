@@ -5,6 +5,7 @@ from expenses.views import portfolios
 from expenses.views import rules
 from expenses.views import categories
 from expenses.views import transactions
+from expenses.views import budgets
 
 urlpatterns = [
     path("", home.home, name="home"),
@@ -22,5 +23,8 @@ urlpatterns = [
     path("rules/assign", portfolios.portfolio_assign_rules, name="portfolio_assign_rules"),
     path("transactions/edit", transactions.edit, name="transaction_edit"),
     path("<int:pk>/analytics/<int:year>", portfolios.analytics, name="portfolio_analytics"),
-    path("<int:pk>/report/<int:year>/<int:month>", portfolios.report, name="portfolio_report")
+    path("<int:pk>/report/<int:year>/<int:month>", portfolios.report, name="portfolio_report"),
+    path("<int:pk>/budgets", portfolios.portfolio_budgets, name="portfolio_budgets"),
+    path("<int:pk>/budgets/create", portfolios.new_budget, name='new_budget'),
+    path("budgets/delete/<int:pk>", budgets.delete, name='delete_budget'),
 ]

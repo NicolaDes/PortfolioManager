@@ -9,6 +9,7 @@
 <div class="topnav">
 	<a href="{% url 'portfolio_detail' portfolio.pk %}">Details</a>
 	<a href="{% url 'portfolio_rules' portfolio.pk %}">Assigned Rules</a>
+    <a href="{% url 'portfolio_budgets' portfolio.pk %}">Assigned Budgets</a>
 	<a href="{% url 'rule_index' %}">Rules</a>
 	<a href="{% url 'category_index' %}">Categories</a>
 	<a href="{% url 'portfolio_analytics' pk=portfolio.pk year=2024 %}">Analytics</a>
