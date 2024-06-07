@@ -1,0 +1,9 @@
+/* Stile generale per tutte le div */
+.highcharts-figure {
+    margin: 5px;
+    border-radius: 20px;
+    background-color: transparent;
+    padding: 20px;
+    margin-top: 20px;
+    /* box-shadow: 0 0 20px var(--theme-table-shadow); */
+}
