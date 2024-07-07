@@ -90,9 +90,9 @@ def portfolio_budgets(request, pk):
 def new_budget(request, pk):
     portfolio = Portfolio.objects.get(pk=pk)
     group = request.POST.get('categoryGroup')
-    perc = request.POST.get('perc')
+    value = request.POST.get('value')
 
-    budget = Budget(portfolio=portfolio, group=group, perc=perc)
+    budget = Budget(portfolio=portfolio, group=group, value=value)
     budget.save()
 
     return redirect("portfolio_budgets", pk)
@@ -224,10 +224,10 @@ def analytics(request, pk, year):
 
     for b in Budget.objects.filter(portfolio=portfolio):
         spent = abs(float(Transaction.objects.filter(portfolio=portfolio, category__group=b.group, date__year=year).annotate(total_value=F('value') - F('percToExclude') * F('value')).aggregate(total_sum=Sum('total_value'))['total_sum']))
-        available = income * float(b.perc)
-        percentageUsed = spent / available
+        target = float(b.value)
+        percentageUsed = spent / target
         
-        budgets.append({"group": b.group, "spent": spent, "available": available, "percentageUsed": int(percentageUsed*100.0)})
+        budgets.append({"group": b.group, "spent": spent, "target": target, "percentageUsed": int(percentageUsed*100.0)})
 
 
     context = {

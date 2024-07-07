@@ -1,0 +1,212 @@
+<html>
+<head>
+    <title>Calcolatore Costi Casa</title>
+    <link rel="stylesheet" href="css/forms.css" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+    <style>
+        /* Inputs */
+        input {
+            border: 1px solid black;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="submit"] {
+            border-radius: 5px;
+            background-color: #cdd1be;
+        }
+
+        input[type="submit"] {
+            margin-right: 10px;
+            background-color: #cdd1be;
+        }
+
+        button {
+            background-color: #cdd1be;
+            border:  none;
+            font-weight: bold;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #cdd1be;
+            border:  none;
+            font-weight: bold;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .div {
+            margin: 5px;
+            border-radius: 20px;
+            background-color: transparent;
+            backdrop-filter: blur(100px) contrast(.8);
+            padding: 20px;
+            margin-top: 20px;
+            /* box-shadow: 0 0 20px var(--theme-table-shadow); */
+        }
+
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Calcolatore Costi Casa</h1>
+        <form method="post">
+            <label for="acquisto">Costo Acquisto Casa:</label>
+            <input type="number" step="0.01" name="acquisto" value="{{.Acquisto}}" required><br>
+            
+            <label for="bagni">Costo Bagni Casa:</label>
+            <input type="number" step="0.01" name="bagni" value="{{.Bagni}}" required><br>
+    
+            <label for="camere">Costo camere Casa:</label>
+            <input type="number" step="0.01" name="camere" value="{{.Camere}}" required><br>
+    
+            <label for="ufficio">Costo ufficio Casa:</label>
+            <input type="number" step="0.01" name="ufficio" value="{{.Ufficio}}" required><br>
+    
+            <label for="cucina">Costo cucina Casa:</label>
+            <input type="number" step="0.01" name="cucina" value="{{.Cucina}}" required><br>
+    
+            <label for="salotto">Costo salotto Casa:</label>
+            <input type="number" step="0.01" name="salotto" value="{{.Salotto}}" required><br>
+    
+            <label for="pavimento">Costo pavimento Casa:</label>
+            <input type="number" step="0.01" name="pavimento" value="{{.Pavimento}}" required><br>
+    
+            <label for="pavimento">Costo pavimento Casa:</label>
+            <input type="number" step="0.01" name="pavimento" value="{{.Pavimento}}" required><br>
+
+            <label for="anticipo">Anticipo Mutuo:</label>
+            <input type="number" step="0.01" name="anticipo" value="{{.Anticipo}}" required><br>
+
+            <label for="tan">Tasso Anno Nominale (TAN):</label>
+            <input type="number" step="0.01" name="tan" value="{{.TAN}}" required><br>
+
+            <label for="taeg">Tasso Annuo Effettivo Globale (TAEG):</label>
+            <input type="number" step="0.01" name="taeg" value="{{.TAEG}}" required><br>
+
+            <label for="anni">Anni mutuo:</label>
+            <input type="number" step="0.01" name="anni" value="{{.Anni}}" required><br>
+
+            <label for="periti">Periti:</label>
+            <input type="number" step="0.01" name="periti" value="{{.Periti}}" required><br>
+
+            <label for="ivaPerc">IVA [%]:</label>
+            <input type="number" step="0.01" name="ivaPerc" value="{{.IVA}}" required><br>
+
+            <label for="agenziaPerc">Commisioni Agenzia [%]:</label>
+            <input type="number" step="0.01" name="agenziaPerc" value="{{.Agenzia}}" required><br>
+
+            <label for="notaioPerc">Commissioni Notaio [%]:</label>
+            <input type="number" step="0.01" name="notaioPerc" value="{{.Notaio}}" required><br>
+    
+            <input type="submit" value="Calcola">
+        </form>
+    </div>
+
+    <div>
+        <h1>Costi e Fattibilità</h1>
+        <table class="styled-table" id="transactionsTable">
+            <thead>
+                <!-- <tr> -->
+                    <!-- <th></th> -->
+                <!-- </tr> -->
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        Importo Mutuo
+                    </td>
+                    <td>
+                        {{.ImportoMutuo}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Rate
+                    </td>
+                    <td>
+                        {{.RateMutuo}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Rata Mensile Semplice
+                    </td>
+                    <td>
+                        {{.RataMensileTAN}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Costo Mutuo Semplice
+                    </td>
+                    <td>
+                        {{.CostoMutuoTAN}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Rata Mensile Reale
+                    </td>
+                    <td>
+                        {{.RataMensileTAEG}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Costo Mutuo Reale
+                    </td>
+                    <td>
+                        {{.CostoMutuoTAEG}}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        Costi Necessari
+                    </td>
+                    <td>
+                        {{.CostiNecessari}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Costi Diluibili
+                    </td>
+                    <td>
+                        {{.CostiDiluibili}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Liquidità Necessaria
+                    </td>
+                    <td>
+                        {{.LiquiditaNecessaria}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <figure class="highcharts-figure">
+            <div id="chart"></div>
+        </figure>
+    </div>
+</body>
+</html>

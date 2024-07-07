@@ -1,0 +1,124 @@
+package house
+package main
+
+import (
+    "fmt"
+    "math"
+    "math/rand"
+    "time"
+)
+
+type House struct {
+    CostoCasa          float64
+    ImpostaRegistro    float64
+    ImpostaIpotecaria float64
+    Iva               float64
+    Periti            float64
+    CommissioniAgenzia float64
+    SpeseNotarili     float64
+    CostoBagni        float64
+    CostoCamere       float64
+    CostoUfficio      float64
+    CostoCucina       float64
+    CostoSalotto      float64
+    CostoPavimento    float64
+    AnniMutuo         float64
+    TassoInteresse   float64
+    CapitaleIniziale float64
+    CashFlow          float64
+    CashFlowStd       float64
+    AnticipoMutuo    float64
+    AffittoCorrente  float64
+}
+
+func (h *House) CalculateSum() {
+    h.CostiAcquisto = (h.CostoCasa * ((h.Iva + h.CommissioniAgenzia + h.SpeseNotarili + h.ImpostaRegistro) / 100.0)) + h.Periti + h.ImpostaIpotecaria
+
+    h.ImportoMutuo = h.CostoCasa - h.AnticipoMutuo
+    h.Rate = h.AnniMutuo * 12.0
+    h.RataMensile = (h.ImportoMutuo * (h.TassoInteresse / 100.0 / 12.0)) / (1.0 - math.Pow(1+(h.TassoInteresse / 100.0 / 12.0), -h.Rate))
+    h.CashFlowRimanente = h.CashFlow - h.RataMensile
+    h.CostoMutuo = (h.RataMensile * h.Rate) - h.ImportoMutuo
+    h.LiquiditaLavoriNecessari = h.CostoPavimento + h.CostoCucina + h.CostoBagni
+    h.LiquiditaLavoriRestanti = h.CostoSalotto + h.CostoCamere + h.CostoUfficio
+    h.LiquiditaPerIniziare = h.AnticipoMutuo + h.LiquiditaLavoriNecessari + h.CostiAcquisto
+
+    var tuple = h.GetSimulation(h.CapitaleIniziale, h.CashFlow, h.AffittoCorrente, h.Rate, h.AnticipoMutuo, h.CostiAcquisto, h.LiquiditaLavoriNecessari, h.RataMensile, h.LiquiditaLavoriRestanti, h.CashFlowStd)
+
+    h.BuyEvent = tuple.Item1
+    h.EndBuyEvent = tuple.Item2
+    h.ChartData = tuple.Item3
+    h.BuyHouseCashFlowUtilizzato = tuple.Item4
+
+    var affittoTuple = h.GetAffittoSimulation(h.CapitaleIniziale, h.AffittoCorrente, h.CashFlow, h.Rate, h.CashFlowStd)
+    h.AffittoSimulationData = affittoTuple.Item2
+    h.AffittoCashFlowUtilizzato = affittoTuple.Item1
+}
+
+func (h *House) GetSimulation(capitaleIniziale float64, cashFlow float64, affitto float64, rate int, anticipoMutuo float64, speseAcquisto float64, lavoriNecessari float64, rataMensile float64, lavoriRestanti float64, standardDeviation float64) (int, int, []float64, float64) {
+    ret := make([]float64, rate)
+    costo := capitaleIniziale
+    ret[0] = capitaleIniziale
+
+    mutuoAperto := false
+    lavoriRestantiFatti := false
+    buyEvent := 0
+    endWorksEvent := 0
+
+    rand.Seed(time.Now().UnixNano())
+
+    for i := 1; i < rate; i++ {
+        probableCashFlow := h.NextGaussian(rand.New(rand.NewSource(time.Now().UnixNano())), cashFlow, standardDeviation)
+        ret[i] = ret[i-1] + probableCashFlow
+
+        if mutuoAperto {
+            ret[i] -= rataMensile
+            costo += rataMensile
+
+            if ret[i] >= lavoriRestanti && lavoriRestantiFatti == false {
+                ret[i] -= lavoriRestanti
+                costo += lavoriRestanti
+                endWorksEvent = i - 1
+                lavoriRestantiFatti = true
+            }
+        }
+
+        if ret[i] >= anticipoMutuo+lavoriNecessari+speseAcquisto && mutuoAperto == false {
+            ret[i] -= (anticipoMutuo + lavoriNecessari + speseAcquisto)
+            costo += (anticipoMutuo + lavoriNecessari + speseAcquisto)
+            buyEvent = i - 1
+            mutuoAperto = true
+        }
+
+        if !mutuoAperto {
+            ret[i] -= affitto
+            costo += affitto
+        }
+    }
+
+    return buyEvent, endWorksEvent, ret, costo
+}
+
+func (h *House) GetAffittoSimulation(capitaleIniziale float64, affitto float64, cashFlow float64, rate int, standardDeviation float64) (float64, []float64) {
+    ret := make([]float64, rate)
+    costo := capitaleIniziale
+    ret[0] = capitaleIniziale
+
+    rand.Seed(time.Now().UnixNano())
+
+    for i := 1; i < rate; i++ {
+        probableCashFlow := h.NextGaussian(rand.New(rand.NewSource(time.Now().UnixNano())), cashFlow, standardDeviation)
+        ret[i] = ret[i-1] + probableCashFlow - affitto + ((ret[i-1] * (0.02 / 12)))
+        costo += affitto
+    }
+
+    return costo, ret
+}
+
+func (h *House) NextGaussian(random *rand.Rand, mean float64, standardDeviation float64) float64 {
+    u1 := 1.0 - random.Float64()
+    u2 := 1.0 - random.Float64()
+    randStdNormal := math.Sqrt(-2.0 * math.Log(u1)) * math.Sin(2.0 * math.Pi * u2)
+    randNormal := mean + standardDeviation * randStdNormal
+    return randNormal
+}

@@ -1,8 +1,6 @@
 from portfolios.models import Portfolio, Asset, AssetInPortfolio
 
 import requests
-import pandas as pd
-import json
 
 class AssetView:
     def __init__(self, asset:Asset):

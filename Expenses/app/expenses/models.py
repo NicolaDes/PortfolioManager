@@ -40,4 +40,4 @@ class RuleInPortfolio(models.Model):
 class Budget(models.Model):
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
     group = models.CharField(max_length=100)
-    perc = models.DecimalField(max_digits=10, decimal_places=3)
+    value = models.DecimalField(max_digits=10, decimal_places=3)
