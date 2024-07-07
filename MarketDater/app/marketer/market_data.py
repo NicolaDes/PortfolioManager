@@ -35,6 +35,7 @@ class MarketData:
         tickerReturns = pd.Series([float(tickerData[k]['close']) for k in tickerData]).pct_change() * 100
         beta = (tickerReturns.cov(btcReturns) / btcReturns.var())
         alpha = (tickerReturns.iloc[-1] - (beta * (btcReturns.mean())))
+        alpha = float(alpha)
 
         self.redis.set("alpha:"+ticker, alpha)
 
@@ -55,6 +56,7 @@ class MarketData:
 
         tickerReturns = pd.Series([float(tickerData[k]['close']) for k in tickerData]).pct_change() * 100
         beta = (tickerReturns.cov(btcReturns) / btcReturns.var())
+        beta = float(beta)
         self.redis.set("beta:"+ticker, beta)
 
         return beta

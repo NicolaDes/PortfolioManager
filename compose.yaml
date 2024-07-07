@@ -2,3 +2,4 @@ include:
   - MarketDater/compose.yaml
   - Portfolio/compose.yaml
   - Expenses/compose.yaml
+  - HouseAnalyzer/compose.yaml

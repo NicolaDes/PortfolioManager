@@ -1,0 +1,40 @@
+/* Inputs */
+input {
+    border: 1px solid var(--theme-border);
+    padding: 5px;
+    border-radius: 5px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="submit"] {
+    border-radius: 5px;
+    background-color: var(--theme-input-submit-background);
+    color: var(--theme-input-submit);
+}
+
+input[type="submit"] {
+    margin-right: 10px;
+    background-color: var(--theme-input-submit-background);
+    color: var(--theme-input-submit);
+}
+
+button {
+    background-color: var(--theme-background);
+    color: var(--theme-primary);
+    border:  none;
+    font-weight: bold;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: var(--theme-primary);
+    color: var(--theme-background);
+    border:  none;
+    font-weight: bold;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}

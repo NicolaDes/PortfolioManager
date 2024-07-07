@@ -2,8 +2,6 @@
 
 {% block page_content %}
 
-<h1>{{portfolio.name}}</h1>
-
 <div class="topnav">
 	<a href="{% url 'portfolio_detail' portfolio.pk %}">Details</a>
 	<a href="{% url 'portfolio_rules' portfolio.pk %}">Assigned Rules</a>

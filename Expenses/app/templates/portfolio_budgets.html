@@ -6,7 +6,7 @@
 
 <button onclick="toggleModal('newBudgetModal', true)">Aggiungi</button>
 
-<div>
+<div class="card">
     <table class="styled-table" id="rulesTable">
         <thead>
             <tr>
@@ -14,7 +14,7 @@
                     Group
                 </th>
                 <th>
-                    Percentage
+                    Value
                 </th>
                 <th>
                     
@@ -28,7 +28,7 @@
                     {{b.group}}
                 </td>
                 <td>
-                    {{b.perc}}
+                    {{b.value}}
                 </td>
                 <td>
                     <form action="{% url 'delete_budget' pk=b.pk %}" method="post" id="delete-form">
@@ -54,8 +54,8 @@
                     <option value="{{ g.group }}">{{ g.group }}</option>
                 {% endfor %}
             </select><br>
-            <label for="perc">Percentage:</label>
-            <input type="number" name="perc" id="perc" step="0.01" required><br>
+            <label for="value">Value:</label>
+            <input type="number" name="value" id="value" step="0.01" required><br>
             <input type="submit" value="Save">
         </form>
     </div>

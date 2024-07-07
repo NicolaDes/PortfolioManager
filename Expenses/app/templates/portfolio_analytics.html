@@ -2,8 +2,6 @@
 
 {% block page_content %}
 
-<h1>{{portfolio.name}}</h1>
-
 <div class="topnav">
 	<a href="{% url 'portfolio_detail' portfolio.pk %}">Details</a>
 	<a href="{% url 'portfolio_rules' portfolio.pk %}">Assigned Rules</a>
@@ -124,7 +122,7 @@
 				<div>
 					<div style="position: relative;">
 						<h3>{{b.group}}</h3>
-						{{b.spent}} / {{b.available}} €
+						{{b.spent}} / {{b.target}} €
 					</div>
 					<div style="position: relative;">
 						<progress value="{{ b.percentageUsed }}" max="100" style="width: 100%; height: 40px; accent-color: {% if b.percentageUsed > 100 %}red{% elif b.percentageUsed >= 80 %}yellow{% else %}green{% endif %};"></progress>

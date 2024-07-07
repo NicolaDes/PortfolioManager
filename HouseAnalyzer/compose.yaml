@@ -1,0 +1,8 @@
+services:
+  house-analyzer:
+    build:
+      context: .
+    command: /godocker
+    container_name: house-analyzer
+    ports:
+      - "9999:9999"

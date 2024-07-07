@@ -8,169 +8,11 @@ body {
     font-family: Arial;
     padding: 11px;
     background: var(--theme-background);
+    background-image: url('../images/background.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
     margin-bottom: 60px;
     margin-left: 0px;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-/* Header/Blog Title */
-.header {
-    padding: 30px;
-    text-align: center;
-    background: var(--theme-background);
-}
-
-.header h1 {
-    font-size: 50px;
-    color: var(--theme-title);
-}
-
-h2, h3, h4, h5, p {
-    color: var(--theme-text);
-}
-
-/* Stile generale per tutte le div */
-div {
-    background-color: var(--theme-div-background);
-    margin: 5px;
-    border-radius: 10px;
-    /* box-shadow: 0 0 20px var(--theme-table-shadow); */
-}
-
-/* Style the top navigation bar */
-.topnav {
-    overflow: hidden;
-    background-color: var(--theme-topnav);
-}
-
-/* Style the topnav links */
-.topnav a {
-    float: left;
-    display: block;
-    color: var(--theme-topnav-elements);
-    background-color: var(--theme-topnav-elements-bg);
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-/* Change color on hover */
-.topnav a:hover {
-    color: var(--theme-topnav-elements-hover);
-    background-color: var(--theme-topnav-elements-bg-hover);
-}
-
-/* Create two unequal columns that floats next to each other */
-/* Left column */
-.leftcolumn {
-    float: left;
-    width: 74%;
-}
-
-/* Right column */
-.rightcolumn {
-    float: left;
-    width: 25%;
-    background-color: var(--theme-background);
-    padding-left: 20px;
-}
-
-/* Add a card effect for articles */
-.card {
-    background-color: var(--theme-card);
-    padding: 20px;
-    margin-top: 20px;
-}
-
-/* Clear floats after the columns */
-.row:after {
-    content: "";
-    display: table;
-    clear: both;
-}
-
-/* Footer */
-.footer {
-    padding: 10px;
-    text-align: center;
-    background: var(--theme-footer-bg);
-    margin-top: 10px;
-}
-
-table {
-    border-collapse: collapse;
-    margin: 25px 0;
-    font-size: 0.9em;
-    font-family: sans-serif;
-    min-width: 400px;
-    /* box-shadow: 0 0 20px var(--theme-table-shadow); */
-}
-
-thead tr {
-    background-color: var(--theme-table-t-background);
-    color: var(--theme-table-t);
-    text-align: left;
-}
-
-th, td {
-    background-color: var(--theme-table-t-background);
-    color: var(--theme-table-t);
-    padding: 12px 15px;
-}
-
-tbody tr {
-    border-bottom: 1px solid var(--theme-table-border);
-}
-
-/* Links */
-a {
-    color: var(--theme-links);
-    text-decoration: none;
-}
-
-
-/* Inputs */
-input {
-    border: 1px solid var(--theme-border);
-    padding: 5px;
-    border-radius: 5px;
-}
-
-input[type="text"],
-input[type="number"],
-input[type="submit"] {
-    border-radius: 5px;
-    background-color: var(--theme-input-submit-background);
-    color: var(--theme-input-submit);
-}
-
-input[type="submit"] {
-    margin-right: 10px;
-    background-color: var(--theme-input-submit-background);
-    color: var(--theme-input-submit);
-}
-
-button {
-    background-color: var(--theme-background);
-    color: var(--theme-primary);
-    border:  none;
-    font-weight: bold;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-button:hover {
-    background-color: var(--theme-primary);
-    color: var(--theme-background);
-    border:  none;
-    font-weight: bold;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 5px;
 }
 
 /* Responsive layouts */
@@ -196,3 +38,57 @@ button:hover {
     }
   }
   
+
+* {
+    box-sizing: border-box;
+}
+
+/* Stile generale per tutte le div */
+.card {
+    margin: 5px;
+    border-radius: 20px;
+    background-color: transparent;
+    backdrop-filter: blur(100px) contrast(.8);
+    padding: 20px;
+    margin-top: 20px;
+    /* box-shadow: 0 0 20px var(--theme-table-shadow); */
+}
+
+/* Style the top navigation bar */
+.topnav {
+    border-radius: 20px;
+    overflow: hidden;
+    justify-content: center;
+    display: flex;
+}
+
+/* Style the topnav links */
+.topnav a {
+    float: left;
+    display: block;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    color: black;
+    font-family: FoundersGrotesk, Helvetica, Arial, sans-serif;
+    font-size: 30px;
+}
+
+/* Change color on hover */
+.topnav a:hover {
+    color: var(--theme-topnav-elements-hover);
+}
+
+/* Create two unequal columns that floats next to each other */
+/* Left column */
+.leftcolumn {
+    float: left;
+    width: 73%;
+}
+
+/* Right column */
+.rightcolumn {
+    float: left;
+    width: 24%;
+    padding-left: 20px;
+}

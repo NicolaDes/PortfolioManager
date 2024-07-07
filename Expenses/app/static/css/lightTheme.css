@@ -21,16 +21,11 @@
     --theme-button-background-hover: var(--theme-one);
 
     --theme-links: var(--theme-one);
-    --theme-input: var(--theme-three);
-    --theme-input-submit-background: var(--theme-two);
-    --theme-input-submit: var(--theme-three);
+    --theme-input: var(--theme-text);
+    --theme-input-submit-background: rgb(173, 186, 218, 0.3);
+    --theme-input-submit: var(--theme-text);
     --theme-border: var(--theme-two);
 
     --theme-div-background: rgb(134, 151, 195, 0.5);
     --theme-card: rgb(134, 151, 195, 0.5);
-    
-    --theme-table-shadow: var(--theme-two);
-    --theme-table-t: var(--theme-text);
-    --theme-table-t-background: var(--theme-background);
-    --theme-table-border: var(--theme-two);
 }
