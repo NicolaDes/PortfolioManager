@@ -93,24 +93,36 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td>Transactions</td>
-							<td>?</td>
+							<td>Salary</td>
+							<td>{{salary}}</td>
 						</tr>
 						<tr>
-							<td>Income</td>
-							<td>?</td>
+							<td>Savings Inflow</td>
+							<td>{{savings}}</td>
 						</tr>
 						<tr>
-							<td>Outcome</td>
-							<td>?</td>
+							<td>Investments Inflow</td>
+							<td>{{investmentsIn}}</td>
 						</tr>
 						<tr>
-							<td>Cashflow</td>
-							<td>?</td>
+							<td>Investments Outflow</td>
+							<td>{{investmentsOut}}</td>
 						</tr>
 						<tr>
-							<td>Undefined Transactions</td>
-							<td>?</td>
+							<td>Investments (Inflow - Outflow)</td>
+							<td>{{investments}}</td>
+						</tr>
+						<tr>
+							<td>Total Income (salary + savings + investments inflow)</td>
+							<td>{{income}}</td>
+						</tr>
+						<tr>
+							<td>Expenses (expenses excluding investments Outflow)</td>
+							<td>{{expenses}}</td>
+						</tr>
+						<tr>
+							<td>Remaining (income - expenses - investments Outflow)</td>
+							<td>{{remaining}}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -147,7 +159,7 @@
 		columnStackChart({{montlyExpensesByCategory}}, ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "montlyExpensesByCategory", "Category Expenses by month", "Months");
 		columnStackChart({{montlyExpensesByLabel}}, ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "montlyExpensesByLabel", "Label Expenses by month", "Months");
 		columnStackChart({{allByCategory}}, ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "allByCategory", "Category by month", "Months");
-		lineChart([{{cashFlowByMonth}}, {{cumulativeCashFlowByMonth}}], ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "cashFlowByMonth", "Cashflow", "Months");
+		lineChart([{"name": "instant cashflow", "data": {{cashFlowByMonth}} }, {"name": "cumulative cashflow", "data": {{cumulativeCashFlowByMonth}} }], ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "cashFlowByMonth", "Cashflow", "Months");
 		{% endautoescape %}
   	};
 

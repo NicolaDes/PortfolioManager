@@ -46,9 +46,6 @@ function pieChart(serie, container, pieName, title)
 // serie := [{name: 'Cat1', data: [1, 4, 31, 23, ..., 32]}]
 // categories := ['Jan', 'Feb', ..., 'Dec']
 function columnStackChart(serie, categories, container, title, yAxisLabel) {
-    console.log(serie);
-    console.log(categories);
-
     const chartData = {
         chart: {
             type: 'column',
@@ -116,7 +113,8 @@ function lineChart(series, yAxis, container, title, yAxisLabel) {
             }
         },
         series: series.map(serie => ({
-            data: serie
+            name: serie.name,
+            data: serie.data
         }))
     });
 

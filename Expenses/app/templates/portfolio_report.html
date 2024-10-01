@@ -35,6 +35,15 @@
                 </tr>
             {% endfor %}
         </tbody>
+        <tfoot>
+            <tr>
+                <td>-</td>
+                <td>Total</td>
+                <td id="total-value"></td>
+                <td>-</td>
+                <td id="total-wValue"></td>
+            </tr>
+        </tfoot>
     </table>
     <button onclick="copyCsv()">Copy CSV</button>
 </div>
@@ -59,15 +68,39 @@
         });
     }
 
+    function computeSums() {
+        const righeSpuntate = document.querySelectorAll('input[type="checkbox"]:checked');
+        let sommaValore = 0;
+        let sommaValorePesato = 0;
+
+        righeSpuntate.forEach(row => {
+            const valore = parseFloat(row.closest('tr').querySelector('td:nth-child(3)').textContent);
+            const valorePesato = parseFloat(row.closest('tr').querySelector('td:nth-child(5)').textContent);
+            sommaValore += valore;
+            sommaValorePesato += valorePesato;
+        });
+
+        document.getElementById('total-value').textContent = sommaValore.toFixed(2);
+        document.getElementById('total-wValue').textContent = sommaValorePesato.toFixed(2);
+    }
+
     function updateValue(id) {
         const valore = parseFloat(document.getElementById(`value-${id}`).textContent);
         const percentuale = parseFloat(document.getElementById(`perc-${id}`).value);
         const valorePesato = valore * percentuale;
-        console.log(valore)
-        console.log(percentuale)
-        console.log(valorePesato)
+        
         document.getElementById(`weightValue-${id}`).textContent = valorePesato.toFixed(2);
+
+        computeSums();
     }
+
+    // Chiamata a computeSums quando la pagina viene ricaricata
+    window.addEventListener('load', computeSums);
+
+    // Chiamata a computeSums quando una checkbox viene spuntata o deselezionata
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', computeSums);
+    });
 </script>
 
 {% endblock page_content %}

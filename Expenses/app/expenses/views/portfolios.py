@@ -219,16 +219,31 @@ def analytics(request, pk, year):
             cumulativeCashFlow.append(cashFlow[-1])
 
     # Budget section
-    income = float(Transaction.objects.filter(portfolio=portfolio, date__year=year).exclude(category__archetype='Outcome').exclude(category__group='Excluded').annotate(total_value=F('value') - F('percToExclude') * F('value')).aggregate(total_sum=Sum('total_value'))['total_sum'])
     budgets = []
 
     for b in Budget.objects.filter(portfolio=portfolio):
-        spent = abs(float(Transaction.objects.filter(portfolio=portfolio, category__group=b.group, date__year=year).annotate(total_value=F('value') - F('percToExclude') * F('value')).aggregate(total_sum=Sum('total_value'))['total_sum']))
+        txts = Transaction.objects.filter(portfolio=portfolio, category__group=b.group, date__year=year)
+        spent = 0.0
+        if txts:
+            spent = abs(float(txts.annotate(total_value=F('value') - F('percToExclude') * F('value')).aggregate(total_sum=Sum('total_value'))['total_sum']))
         target = float(b.value)
         percentageUsed = spent / target
         
         budgets.append({"group": b.group, "spent": spent, "target": target, "percentageUsed": int(percentageUsed*100.0)})
 
+    # Side section
+    salary = float(Transaction.objects.filter(portfolio=portfolio, date__year=year, category__archetype="Income", category__group="Salary").aggregate(total_sum=Sum('value'))['total_sum'] or 0)
+    savings = float(Transaction.objects.filter(portfolio=portfolio, date__year=year, category__archetype="Income", category__group="Savings").aggregate(total_sum=Sum('value'))['total_sum'] or 0)
+
+    investmentsIn = float(Transaction.objects.filter(portfolio=portfolio, date__year=year, category__archetype="Income", category__group="Investments").aggregate(total_sum=Sum('value'))['total_sum'] or 0)
+    investmentsOut = float(Transaction.objects.filter(portfolio=portfolio, date__year=year, category__archetype="Outcome", category__group="Investments").aggregate(total_sum=Sum('value'))['total_sum'] or 0)
+    investments = investmentsIn - abs(investmentsOut)
+    
+    expenses = float(Transaction.objects.filter(portfolio=portfolio, date__year=year).exclude(category__archetype='Income').exclude(category__group='Excluded').exclude(category__group='Savings').exclude(category__group='Investments').annotate(total_value=F('value') - (F('percToExclude') * F('value'))).aggregate(total_sum=Sum('total_value'))['total_sum'] or 0)
+    
+    income = salary + savings + investmentsIn
+
+    remaining = income - abs(expenses) - abs(investmentsOut)
 
     context = {
         "portfolio": portfolio,
@@ -240,7 +255,14 @@ def analytics(request, pk, year):
         "cashFlowByMonth": cashFlow,
         "cumulativeCashFlowByMonth": cumulativeCashFlow,
         "budgets": budgets,
-        "income": income
+        "salary": salary,
+        "savings": savings,
+        "investmentsIn": investmentsIn,
+        "investmentsOut": investmentsOut,
+        "investments": investments,
+        "expenses": expenses,
+        "income": income,
+        "remaining": remaining
     }
 
     return render(request, "portfolio_analytics.html", context)
