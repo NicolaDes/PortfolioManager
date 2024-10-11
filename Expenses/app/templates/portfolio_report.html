@@ -51,14 +51,15 @@
 <script>
     function copyCsv() {
         const righeSpuntate = document.querySelectorAll('input[type="checkbox"]:checked');
+        const formatter = new Intl.NumberFormat('pt-BR');
         const csvContent = Array.from(righeSpuntate).map(row => {
             const descrizione = row.closest('tr').querySelector('td:nth-child(2)').textContent;
             const valoreSpeso = row.closest('tr').querySelector('td:nth-child(3)').textContent;
             const valorePesato = row.closest('tr').querySelector('td:nth-child(5)').textContent;
-            return `${descrizione},${valoreSpeso},${valorePesato}`;
+            return `${descrizione};${formatter.format(valoreSpeso)};${formatter.format(valorePesato)}`;
         }).join('\n');
 
-        const csv = "Descrizione,SpesoNetto,DaPagare\n"+csvContent
+        const csv = "Descrizione;SpesoNetto;DaPagare\n"+csvContent
 
         // Copia il CSV nella clipboard (puoi personalizzare questa parte)
         navigator.clipboard.writeText(csv).then(() => {
