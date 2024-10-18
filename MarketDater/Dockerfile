@@ -1,26 +1,39 @@
-# syntax = docker/dockerfile:1.4
+# Stage 1: Build
+FROM maven:3.8.1-openjdk-11-slim AS builder
 
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9-slim AS builder
-
+# Imposta la directory di lavoro per la build
 WORKDIR /app
 
-COPY requirements.txt ./
-RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install -r requirements.txt
+# Copia pom.xml separatamente
+COPY app/pom.xml .
 
-COPY ./app ./app
+# Scarica le dipendenze Maven
+RUN mvn dependency:go-offline
 
-FROM builder as dev-envs
+# Copia tutto il contenuto della cartella app
+COPY app .
 
-RUN <<EOF
-apt-get update
-apt-get install -y --no-install-recommends git
-EOF
+# Costruisci il progetto Maven senza eseguire i test
+RUN mvn clean package -DskipTests
 
-RUN <<EOF
-useradd -s /bin/bash -m vscode
-groupadd docker
-usermod -aG docker vscode
-EOF
-# install Docker tools (cli, buildx, compose)
-COPY --from=gloursdocker/docker / /
+# Stage 2: Runtime
+FROM openjdk:11-jre-slim
+
+# Installa netcat
+RUN apt-get update && apt-get install -y netcat
+
+# Imposta la directory di lavoro
+WORKDIR /app
+
+# Copia l'applicazione costruita dallo stage builder
+COPY --from=builder /app/target/myapp-1.0.0.jar /app/myapp.jar
+
+# Espone la porta 8000 per la tua applicazione
+EXPOSE 8000
+
+# Copia e imposta lo script di entrypoint
+COPY app/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+# Comando di esecuzione
+CMD ["sh", "/app/entrypoint.sh"]

@@ -1,0 +1,4 @@
+#!/bin/sh
+BASEDIR=$(dirname "$0")
+MAVEN_OPTS="-Xmx1024m"
+exec "$BASEDIR/mvnw.cmd" "$@"
