@@ -120,6 +120,58 @@ function lineChart(series, yAxis, container, title, yAxisLabel) {
 
 }
 
+function lineAreaChart(lineSeries, areaSeries, yAxis, container, title, yAxisLabel) {
+    Highcharts.chart(container, {
+        chart: {
+            type: 'spline' // default, ma verrà ignorato dalle singole serie
+        },
+        title: {
+            text: title
+        },
+        xAxis: {
+            categories: yAxis
+        },
+        yAxis: {
+            title: {
+                text: yAxisLabel
+            }
+        },
+        tooltip: {
+            crosshairs: true,
+            shared: true
+        },
+        plotOptions: {
+            spline: {
+                marker: {
+                    radius: 4,
+                    lineColor: '#666666',
+                    lineWidth: 1
+                }
+            },
+            area: {
+                fillOpacity: 0.3,
+                marker: {
+                    enabled: false
+                }
+            }
+        },
+        series: [
+            // Prima le linee
+            ...lineSeries.map(serie => ({
+                name: serie.name,
+                data: serie.data,
+                type: 'spline'
+            })),
+            // Poi le aree
+            ...areaSeries.map(serie => ({
+                name: serie.name,
+                data: serie.data,
+                type: 'area'
+            }))
+        ]
+    });
+}
+
 // Remove the formatting to get integer data for summation
 function intVal(i) {
     ret = typeof i === 'string' ? i.replace(/[\$€,]/g, '') * 1 : typeof i === 'number' ? i : 0;

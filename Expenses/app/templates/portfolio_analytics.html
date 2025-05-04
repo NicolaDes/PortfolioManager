@@ -8,7 +8,7 @@
 	<a href="{% url 'portfolio_budgets' portfolio.pk %}">Assigned Budgets</a>
 	<a href="{% url 'rule_index' %}">Rules</a>
 	<a href="{% url 'category_index' %}">Categories</a>
-	<a href="{% url 'portfolio_analytics' pk=portfolio.pk year=2024 %}">Analytics</a>
+	<a href="{% url 'portfolio_analytics' pk=portfolio.pk year=2025 %}">Analytics</a>
 </div>
 
 <div class="row">
@@ -54,10 +54,18 @@
 				</figure>
 			</div>
 
-		</div>
+			<div>
+				<figure class="highcharts-figure">
+					<div id="cashFlowByMonthWithPreviousYear"></div>
+				</figure>
+			</div>
 
-		<div class="card">
-			
+			<div>
+				<figure class="highcharts-figure">
+					<div id="espensesChart"></div>
+				</figure>
+			</div>
+
 		</div>
 	</div>
 
@@ -160,6 +168,8 @@
 		columnStackChart({{montlyExpensesByLabel}}, ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "montlyExpensesByLabel", "Label Expenses by month", "Months");
 		columnStackChart({{allByCategory}}, ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "allByCategory", "Category by month", "Months");
 		lineChart([{"name": "instant cashflow", "data": {{cashFlowByMonth}} }, {"name": "cumulative cashflow", "data": {{cumulativeCashFlowByMonth}} }], ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "cashFlowByMonth", "Cashflow", "Months");
+		lineAreaChart([{"name": "Instant Cashflow current year", "data": {{cashFlowByMonth}} }, {"name": "Instant Cashflow previous year", "data": {{cashFlowByMonthLastYear}} }], [{"name": "Cumulative Cashflow current year", "data": {{cumulativeCashFlowByMonth}} }, {"name": "Cumulative Cashflow previous year", "data": {{cumulativeCashFlowByMonthLastYear}} }], ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "cashFlowByMonthWithPreviousYear", "Cashflow Comparison", "Months");
+		lineChart([{"name": "Expenses current year", "data": {{expensesByMonth}}}, {"name": "Expenses previous year", "data": {{expensesByMonthLastYear}}}], ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "espensesChart", "Expenses", "Months");
 		{% endautoescape %}
   	};
 

@@ -217,6 +217,39 @@ def analytics(request, pk, year):
             cumulativeCashFlow.append(cumulativeCashFlow[-1] + cashFlow[-1])
         else:
             cumulativeCashFlow.append(cashFlow[-1])
+        
+    cashFlowLastYear = []
+    cumulativeCashFlowByMonthLastYear = []
+    for month in range(1, 13):
+        sumValue = Transaction.objects.filter(portfolio=portfolio, date__year=(year-1), date__month=month).exclude(category__group='Excluded').exclude(category__group='Investments').exclude(category__group='Savings').annotate(total_value=F('value') - F('percToExclude') * F('value')).aggregate(total_sum=Sum('total_value'))['total_sum']
+
+        if sumValue is not None:
+            cashFlowLastYear.append(float(sumValue))
+        else:
+            cashFlowLastYear.append(float(0))
+
+        if len(cumulativeCashFlowByMonthLastYear) > 0:
+            cumulativeCashFlowByMonthLastYear.append(cumulativeCashFlowByMonthLastYear[-1] + cashFlowLastYear[-1])
+        else:
+            cumulativeCashFlowByMonthLastYear.append(cashFlowLastYear[-1])
+
+    # Espenses section
+    expensesByMonth = []
+    for month in range(1, 13):
+        sumValue = Transaction.objects.filter(portfolio=portfolio, date__year=(year), date__month=month, category__archetype='Outcome').exclude(category__group='Excluded').exclude(category__group='Investments').exclude(category__group='Savings').annotate(total_value=F('value') - F('percToExclude') * F('value')).aggregate(total_sum=Sum('total_value'))['total_sum']
+        if sumValue is not None:
+            expensesByMonth.append(float(sumValue))
+        else:
+            expensesByMonth.append(float(0))
+
+    expensesByMonthLastYear = []
+    for month in range(1, 13):
+        sumValue = Transaction.objects.filter(portfolio=portfolio, date__year=(year-1), date__month=month, category__archetype='Outcome').exclude(category__group='Excluded').exclude(category__group='Investments').exclude(category__group='Savings').annotate(total_value=F('value') - F('percToExclude') * F('value')).aggregate(total_sum=Sum('total_value'))['total_sum']
+        if sumValue is not None:
+            expensesByMonthLastYear.append(float(sumValue))
+        else:
+            expensesByMonthLastYear.append(float(0))
+
 
     # Budget section
     budgets = []
@@ -253,6 +286,10 @@ def analytics(request, pk, year):
         "montlyExpensesByLabel": expensesMonthlyByLabel,
         "allByCategory": totalMontlyByCategory,
         "cashFlowByMonth": cashFlow,
+        "cashFlowByMonthLastYear": cashFlowLastYear,
+        "cumulativeCashFlowByMonthLastYear": cumulativeCashFlowByMonthLastYear,
+        "expensesByMonth": expensesByMonth,
+        "expensesByMonthLastYear": expensesByMonthLastYear,
         "cumulativeCashFlowByMonth": cumulativeCashFlow,
         "budgets": budgets,
         "salary": salary,
